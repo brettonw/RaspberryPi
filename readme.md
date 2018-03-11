@@ -3,6 +3,7 @@
 ## Steps to set up a raspberry pi 3 for use with this project
 - setup raspberry pi, enable wifi or wired networking
 - give it a unique hostname on the network
+- from raspi-config, enable ssh
 - from the config directory, run the setup-raspberry-pi.sh script
 
 ### it will...
