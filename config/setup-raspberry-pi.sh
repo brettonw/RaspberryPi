@@ -96,3 +96,7 @@ echo "NEXT";
 # create m2 folder - /home/<me>/m2
 # copy settings.xml from ./config to /home/<me>/m2
 # git clone repository
+
+# force update on all software packages (sudo apt-get update && sudo apt-get upgrade)
+# update the chromium launch command to remove the "disable GPU compositing" flag
+# update the config to use the Open GL driver (full), and set the memory split to 256
