@@ -1,27 +1,31 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# make sure Java is in the path
+export JAVA_HOME="$HOME/bin/jdk8"
+export PATH=$JAVA_HOME/bin:$PATH
 
-# If not running interactively, don't do anything
+# if we are not running interactively, don't do anything else
 case $- in
     *i*) ;;
       *) return;;
 esac
 
+# just the way I like my prompt
 export PS1="\! (\h) \W : "
 
-export PATH=.:~/bin/jdk8/bin:$PATH
-
+# a simple way to use git to capture changes
 function gitgo {
     git add --all . && git commit && git push origin HEAD;
 }
 
+# (E)macs (C)lient - a holdover from the old days when I used emacs for editing files, it's
+# in my muscle memory now, so I keep things simple by defining it on every system I work on
 function ec {
     nano $*;
 }
 
+# to build and run projects using Maven - the GPIO libraries require root access, so we have
+# to run the build with sudo. I want my own maven executable and settings, so that we don't
+# end up with a copy of the m2 cache in other places.
 function mvn {
     sudo env "PATH=$PATH" $HOME/bin/apache-maven/bin/mvn --settings $HOME/m2/settings.xml $*;
 }
 
-export JAVA_HOME="/home/brettonw/bin/jdk8"
