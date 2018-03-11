@@ -19,4 +19,5 @@
 
 # Steps to use the WebGL capability
 - update the chromium launch command to remove the "disable GPU compositing" flag
-- update the raspi-config->advanced Options to use the Open GL driver (full KMS), and set the memory split to 256
+- update the raspi-config->advanced Options to use the Open GL driver (full or fake KMS), and set the memory split to 256
+  NOTE: doing this causes video playback to fail on the device. The software is still very much in development.
