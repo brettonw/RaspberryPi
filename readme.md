@@ -24,3 +24,6 @@
 
 # Video playback
 - H264 playback seems to be supported, even in full screen, in the chromium browser. It is heavily affected by the network interface, and the amount of memory dedicated to the GPU.
+
+# Notes
+I use sshpass to do ssh logins from the command line in the setup script. This is not a popular tool - brew doesn't install it on the mac. I don't exactly appreciate having other people make my decisions for me, so I built it and installed it myself - the source was pulled from sourceforge.

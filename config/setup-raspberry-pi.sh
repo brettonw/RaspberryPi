@@ -6,7 +6,7 @@
 # get the name of the machine we are logging into
 RASPBERRY_PI=$1;
 if [[ -z  $RASPBERRY_PI  ]]; then
-    echo "Usage: $0 <hostname> <password>";
+    echo "Usage: $0 hostname <pi-password>";
     exit;
 fi
 
@@ -77,34 +77,78 @@ while [[ -z $RASPBERRY_PI_USER_PASSWORD ]]; do
 done
 
 # get a password to use for the new account
-echo "The next operation is to create an account for $USER@$RASPBERRY_PI. What would you like the password for this new user to be?";
-read NEW_USER_PASSWORD;
-if [[ -z $NEW_USER_PASSWORD ]]; then
+echo "The next set of operations will create an account for $USER@$RASPBERRY_PI, if one doesn't exist.";
+echo "What is the password for this new user?";
+echo "(If you enter a blank password, a random one will be created)";
+read USER_PASSWORD;
+if [[ -z $USER_PASSWORD ]]; then
     # if the user doesn't want to give one, we can just make one up - they will use ssh with
     # certs when we are done anyway, and they have access to the default user password with
     # sudo rights if they need to reset it
     OLD_LC_CTYPE=$LC_CTYPE
     export LC_CTYPE=C
-    NEW_USER_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
+    USER_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
     export LC_CTYPE=$OLD_LC_CTYPE
-    echo "Created password ($NEW_USER_PASSWORD), make note of this for your records";
+    echo "Created password for $USER ($USER_PASSWORD), make note of this for your records.";
 fi
 
-# create user on raspberry pi
-echo "NEXT: $NEW_USER_PASSWORD";
+# try to login with the supplied credentials
+checkLogin $USER $USER_PASSWORD
+if [ $? != 0 ]; then
+    echo "Creating new account...";
+    # if that fails, create a new user and set the password
+    sshpass -p ${RASPBERRY_PI_USER_PASSWORD} ssh $RASPBERRY_PI_USER@$RASPBERRY_PI "sudo adduser $USER" 2>&1
+    sshpass -p ${RASPBERRY_PI_USER_PASSWORD} ssh $RASPBERRY_PI_USER@$RASPBERRY_PI "echo $USER:$USER_PASSWORD | sudo chpasswd" 2>&1
 
-# update sudoers so <me> can sudo without passwords
+    # update sudoers so <me> can sudo without passwords
+    sshpass -p ${RASPBERRY_PI_USER_PASSWORD} ssh $RASPBERRY_PI_USER@$RASPBERRY_PI "sudo echo $USER ALL=(ALL) NOPASSWD: ALL >> /etc/sudoers" 2>&1
 
-# login as user <me>
-# copy ssh config so I can login quietly
+else
+    echo "Using existing account...";
+fi
+
+# from now on, we don't need to specify the user to the ssh commands, they will default to <me>
+
+# if authorized keys doesn't exist
+sshpass -p $USER_PASSWORD ssh $RASPBERRY_PI "test -e ~/.ssh/authorized_keys";
+if [ $? != 0 ]; then
+    # copy the identity so I can login quietly from now on - we copy the keys too, so we can
+    # use git quietly
+    echo "Installing certs...";
+    sshpass -p $USER_PASSWORD ssh $RASPBERRY_PI mkdir -p -m 700 ~/.ssh;
+    sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa.pub $RASPBERRY_PI:~/.ssh/authorized_keys;
+    sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa $RASPBERRY_PI:~/.ssh/;
+    sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa.pub $RASPBERRY_PI:~/.ssh/;
+else
+    echo "Using existing certs...";
+fi
+
+# from now on, should be able to do operations without sshpass
+
 # copy bashrc from ./config to /home/<me>/.bashrc
-# echo > .hushlogin
+scp ./bashrc $RASPBERRY_PI:~/.bashrc
+ssh $RASPBERRY_PI "echo > .hushlogin"
+
+# setup the remote environment
 # "install" a recent jdk8 - I put this in my /home/<me>/bin folder so as not to interfere with any other configurations
 # "install" maven - also in the /home/<me>/bin folder
+ssh $RASPBERRY_PI mkdir -p ~/bin
+scp ./bin/jdk-8u162-linux-arm32-vfp-hflt.tar.gz $RASPBERRY_PI:~/bin/
+scp ./bin/apache-maven-3.5.3-bin.tar.gz $RASPBERRY_PI:~/bin/
+ssh $RASPBERRY_PI cd bin && tar xvzf jdk-8u162-linux-arm32-vfp-hflt.tar.gz
+ssh $RASPBERRY_PI cd bin && ln -s jdk-8u162-linux-arm32-vfp-hflt jdk8
+ssh $RASPBERRY_PI cd bin && tar xvzf apache-maven-3.5.3-bin.tar.gz
+ssh $RASPBERRY_PI cd bin && ln -s apache-maven-3.5.3-bin apache-maven
+
 # create m2 folder - /home/<me>/m2
 # copy settings.xml from ./config to /home/<me>/m2
-# git clone repository
+ssh $RASPBERRY_PI mkdir -p ~/m2
+scp ./maven-settings.xml $RASPBERRY_PI:~/m2/settings.xml
 
 # force update on all software packages (sudo apt-get update && sudo apt-get upgrade)
-# update the chromium launch command to remove the "disable GPU compositing" flag
-# update the config to use the Open GL driver (full), and set the memory split to 256
+ssh $RASPBERRY_PI "sudo apt-get update && sudo apt-get dist-upgrade"
+
+# git clone repository
+ssh $RASPBERRY_PI mkdir -p ~/work
+ssh $RASPBERRY_PI "cd work && git clone git@github.com:brettonw/RaspberryPi.git"
+
