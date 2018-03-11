@@ -1,0 +1,27 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+export PS1="\! (\h) \W : "
+
+export PATH=.:~/bin/jdk8/bin:$PATH
+
+function gitgo {
+    git add --all . && git commit && git push origin HEAD;
+}
+
+function ec {
+    nano $*;
+}
+
+function mvn {
+    sudo env "PATH=$PATH" $HOME/bin/apache-maven/bin/mvn --settings $HOME/m2/settings.xml $*;
+}
+
+export JAVA_HOME="/home/brettonw/bin/jdk8"
