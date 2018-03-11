@@ -76,14 +76,22 @@ while [[ -z $RASPBERRY_PI_USER_PASSWORD ]]; do
     checkLogin2;
 done
 
-# get a password to use for the new account - if the user doesn't want to give one, we can
-# just make one up - they will use ssh with certs when we are done anyway, and they
-# (presumably) have access to the default user password with sudo rights if they need to
-# reset it
-
+# get a password to use for the new account
+echo "The next operation is to create an account for $USER@$RASPBERRY_PI. What would you like the password for this new user to be?";
+read NEW_USER_PASSWORD;
+if [[ -z $NEW_USER_PASSWORD ]]; then
+    # if the user doesn't want to give one, we can just make one up - they will use ssh with
+    # certs when we are done anyway, and they have access to the default user password with
+    # sudo rights if they need to reset it
+    OLD_LC_CTYPE=$LC_CTYPE
+    export LC_CTYPE=C
+    NEW_USER_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
+    export LC_CTYPE=$OLD_LC_CTYPE
+    echo "Created password ($NEW_USER_PASSWORD), make note of this for your records";
+fi
 
 # create user on raspberry pi
-echo "NEXT";
+echo "NEXT: $NEW_USER_PASSWORD";
 
 # update sudoers so <me> can sudo without passwords
 
