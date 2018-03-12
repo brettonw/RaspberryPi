@@ -35,13 +35,13 @@ checkLogin() {
     local LOGIN_MESSAGE=$3;
 
     echo "Logging into $LOGIN_USER@$RASPBERRY_PI ($LOGIN_MESSAGE)...";
-    local LOGIN_RESPONSE="$(sshpass -p $LOGIN_PASSWORD ssh $LOGIN_USER@$RASPBERRY_PI printenv 2>&1)";
-    #echo "Login Response: $LOGIN_RESPONSE";
+    local LOGIN_RESPONSE="$(sshpass -p $LOGIN_PASSWORD ssh -o StrictHostKeyChecking=no $LOGIN_USER@$RASPBERRY_PI printenv 2>&1)";
     echo $LOGIN_RESPONSE | grep "USER=$LOGIN_USER" &> /dev/null;
     if [ $? == 0 ]; then
         return 0;
-    #else
-    #    echo "...Failed";
+    else
+        #echo "...Failed";
+        echo "Login Response: $LOGIN_RESPONSE";
     fi
     return 1;
 }
@@ -67,7 +67,7 @@ if [ $? == 0 ]; then
     RASPBERRY_PI_USER_PASSWORD=$NEW_RASPBERRY_PI_USER_PASSWORD;
 else
     RASPBERRY_PI_USER_PASSWORD=$2;
-    echo "Using $RASPBERRY_PI_USER password ($RASPBERRY_PI_USER_PASSWORD)";
+    #echo "Using $RASPBERRY_PI_USER password ($RASPBERRY_PI_USER_PASSWORD)";
 fi
 
 # function to check login with specific global variables
@@ -81,7 +81,7 @@ checkLogin2() {
     fi
 }
 
-checkLogin2 "verify credentials";
+checkLogin2 "$RASPBERRY_PI_USER_PASSWORD";
 while [[ -z $RASPBERRY_PI_USER_PASSWORD ]]; do
     echo "What is the password for $RASPBERRY_PI_USER@$RASPBERRY_PI? ";
     read RASPBERRY_PI_USER_PASSWORD;
@@ -133,7 +133,7 @@ if [ $? != 0 ]; then
     # use git quietly
     echo "Installing certs...";
     sshpass -p $USER_PASSWORD ssh $RASPBERRY_PI "mkdir -p -m 700 .ssh";
-    echo "  ...Authorized keys";
+    echo "  ...authorized keys";
     sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa.pub $RASPBERRY_PI:.ssh/authorized_keys;
     echo "  ...id";
     sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa $RASPBERRY_PI:.ssh/;
@@ -147,6 +147,13 @@ else
 fi
 
 # from now on, should be able to do operations without sshpass
+
+# force update on all software packages (sudo apt-get update && sudo apt-get upgrade)
+echo "Update raspberry pi...";
+ssh $RASPBERRY_PI "sudo apt-get update --yes && sudo apt-get dist-upgrade --yes"
+
+echo "Install git...";
+ssh $RASPBERRY_PI "sudo apt-get install git --yes"
 
 # copy bashrc from ./config to /home/<me>/.bashrc
 echo "Configuring home...";
@@ -164,7 +171,6 @@ ssh $RASPBERRY_PI "cd bin; tar xvzf jdk-8u162-linux-arm32-vfp-hflt.tar.gz;"
 ssh $RASPBERRY_PI "cd bin; ln -s jdk1.8.0_162 jdk8;"
 ssh $RASPBERRY_PI "cd bin; rm -f jdk-8u162-linux-arm32-vfp-hflt.tar.gz;"
 
-
 echo "  ...maven";
 scp ./bin/apache-maven-3.5.3-bin.tar.gz $RASPBERRY_PI:bin
 ssh $RASPBERRY_PI "cd bin; tar xvzf apache-maven-3.5.3-bin.tar.gz;"
@@ -181,8 +187,4 @@ scp ./maven-settings.xml $RASPBERRY_PI:m2/settings.xml
 echo "Clone and test...";
 ssh $RASPBERRY_PI mkdir -p work
 ssh $RASPBERRY_PI "cd work; git clone git@github.com:brettonw/RaspberryPi.git; cd RaspberryPi; mvn clean test;"
-
-# force update on all software packages (sudo apt-get update && sudo apt-get upgrade)
-echo "Update raspberry pi...";
-ssh $RASPBERRY_PI "sudo apt-get update --yes && sudo apt-get dist-upgrade --yes"
 
