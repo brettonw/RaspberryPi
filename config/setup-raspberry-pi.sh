@@ -113,9 +113,12 @@ if [ $? != 0 ]; then
     sshpass -p ${RASPBERRY_PI_USER_PASSWORD} ssh $RASPBERRY_PI_USER@$RASPBERRY_PI "echo $USER:$USER_PASSWORD | sudo chpasswd" 2>&1
 
     # update sudoers so <me> can sudo without passwords
-    echo "Adding $USER to /etc/sudoers...";
-    # TODO don't do this if $USER is already in sudoers
-    sshpass -p ${RASPBERRY_PI_USER_PASSWORD} ssh $RASPBERRY_PI_USER@$RASPBERRY_PI "echo \"$USER ALL=(ALL) NOPASSWD: ALL\" | sudo tee -a /etc/sudoers" 2>&1
+    echo "Checking for $USER in /etc/sudoers...";
+    sshpass -p ${RASPBERRY_PI_USER_PASSWORD} ssh $RASPBERRY_PI_USER@$RASPBERRY_PI "sudo grep $USER /etc/sudoers" 2>&1
+    if [ $? != 0 ]; then
+        echo "Adding $USER to /etc/sudoers...";
+        sshpass -p ${RASPBERRY_PI_USER_PASSWORD} ssh $RASPBERRY_PI_USER@$RASPBERRY_PI "echo \"$USER ALL=(ALL) NOPASSWD: ALL\" | sudo tee -a /etc/sudoers" 2>&1;
+    fi
 else
     echo "Using existing account...";
 fi
@@ -130,11 +133,11 @@ if [ $? != 0 ]; then
     echo "Installing certs...";
     sshpass -p $USER_PASSWORD ssh $RASPBERRY_PI "mkdir -p -m 700 .ssh";
     echo "copy authorized keys.";
-    sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa.pub $RASPBERRY_PI:~/.ssh/authorized_keys;
+    sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa.pub $RASPBERRY_PI:.ssh/authorized_keys;
     echo "copy id.";
-    sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa $RASPBERRY_PI:~/.ssh/;
+    sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa $RASPBERRY_PI:.ssh/;
     echo "copy pub.";
-    sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa.pub $RASPBERRY_PI:~/.ssh/;
+    sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa.pub $RASPBERRY_PI:.ssh/;
     echo "Done installing certs.";
 else
     echo "Using existing certs...";
