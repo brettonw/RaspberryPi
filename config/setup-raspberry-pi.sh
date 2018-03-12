@@ -132,12 +132,14 @@ if [ $? != 0 ]; then
     # use git quietly
     echo "Installing certs...";
     sshpass -p $USER_PASSWORD ssh $RASPBERRY_PI "mkdir -p -m 700 .ssh";
-    echo "copy authorized keys.";
+    echo "  ...Authorized keys";
     sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa.pub $RASPBERRY_PI:.ssh/authorized_keys;
-    echo "copy id.";
+    echo "  ...id";
     sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa $RASPBERRY_PI:.ssh/;
-    echo "copy pub.";
+    echo "  ...pub";
     sshpass -p $USER_PASSWORD scp ~/.ssh/id_rsa.pub $RASPBERRY_PI:.ssh/;
+    echo "  ...known hosts";
+    sshpass -p $USER_PASSWORD scp ./known_hosts $RASPBERRY_PI:.ssh/;
     echo "Done installing certs.";
 else
     echo "Using existing certs...";
@@ -152,23 +154,30 @@ ssh $RASPBERRY_PI "echo > .hushlogin"
 # setup the remote environment
 # "install" a recent jdk8 - I put this in my /home/<me>/bin folder so as not to interfere with any other configurations
 # "install" maven - also in the /home/<me>/bin folder
+echo "Configuring bin...";
 ssh $RASPBERRY_PI mkdir -p bin
+echo "  ...java";
 scp ./bin/jdk-8u162-linux-arm32-vfp-hflt.tar.gz $RASPBERRY_PI:bin
+ssh $RASPBERRY_PI "cd bin; tar xvzf jdk-8u162-linux-arm32-vfp-hflt.tar.gz;"
+ssh $RASPBERRY_PI "cd bin; ln -s jdk1.8.0_162 jdk8;"
+
+echo "  ...maven";
 scp ./bin/apache-maven-3.5.3-bin.tar.gz $RASPBERRY_PI:bin
-ssh $RASPBERRY_PI cd bin && tar xvzf jdk-8u162-linux-arm32-vfp-hflt.tar.gz
-ssh $RASPBERRY_PI cd bin && ln -s jdk-8u162-linux-arm32-vfp-hflt jdk8
-ssh $RASPBERRY_PI cd bin && tar xvzf apache-maven-3.5.3-bin.tar.gz
-ssh $RASPBERRY_PI cd bin && ln -s apache-maven-3.5.3-bin apache-maven
+ssh $RASPBERRY_PI "cd bin; tar xvzf apache-maven-3.5.3-bin.tar.gz;"
+ssh $RASPBERRY_PI "cd bin; ln -s apache-maven-3.5.3 apache-maven;"
 
 # create m2 folder - /home/<me>/m2
 # copy settings.xml from ./config to /home/<me>/m2
+echo "Configuring maven...";
 ssh $RASPBERRY_PI mkdir -p m2
 scp ./maven-settings.xml $RASPBERRY_PI:m2/settings.xml
 
-# force update on all software packages (sudo apt-get update && sudo apt-get upgrade)
-ssh $RASPBERRY_PI "sudo apt-get update --yes && sudo apt-get dist-upgrade --yes"
-
 # git clone repository
+echo "Clone and test...";
 ssh $RASPBERRY_PI mkdir -p work
-ssh $RASPBERRY_PI "cd work && git clone git@github.com:brettonw/RaspberryPi.git"
+ssh $RASPBERRY_PI "cd work; git clone git@github.com:brettonw/RaspberryPi.git; mvn clean test;"
+
+# force update on all software packages (sudo apt-get update && sudo apt-get upgrade)
+echo "Update raspberry pi...";
+ssh $RASPBERRY_PI "sudo apt-get update --yes && sudo apt-get dist-upgrade --yes"
 
