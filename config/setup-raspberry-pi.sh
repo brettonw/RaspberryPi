@@ -89,10 +89,11 @@ while [[ -z $RASPBERRY_PI_USER_PASSWORD ]]; do
 done
 
 # get a password to use for the new account
-echo "Next, create an account for $USER@$RASPBERRY_PI (if one doesn't exist).";
-echo "What is the password for this new user?";
-echo "(If you enter a blank password, a random one will be created)";
-read USER_PASSWORD;
+echo "Creating account for $USER@$RASPBERRY_PI...";
+#echo "What is the password for this new user?";
+#echo "(If you enter a blank password, a random one will be created)";
+#read USER_PASSWORD;
+USER_PASSWORD="";
 if [[ -z $USER_PASSWORD ]]; then
     # if the user doesn't want to give one, we can just make one up - they will use ssh with
     # certs when we are done anyway, and they have access to the default user password with
@@ -101,7 +102,7 @@ if [[ -z $USER_PASSWORD ]]; then
     export LC_CTYPE=C
     USER_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
     export LC_CTYPE=$OLD_LC_CTYPE
-    echo "Created password for $USER ($USER_PASSWORD), make note of this for your records."
+    echo "Created password for $USER ($USER_PASSWORD)."
 fi
 
 # try to login with the supplied credentials
@@ -148,6 +149,7 @@ fi
 # from now on, should be able to do operations without sshpass
 
 # copy bashrc from ./config to /home/<me>/.bashrc
+echo "Configuring home...";
 scp ./bashrc $RASPBERRY_PI:~/.bashrc
 ssh $RASPBERRY_PI "echo > .hushlogin"
 
@@ -160,11 +162,14 @@ echo "  ...java";
 scp ./bin/jdk-8u162-linux-arm32-vfp-hflt.tar.gz $RASPBERRY_PI:bin
 ssh $RASPBERRY_PI "cd bin; tar xvzf jdk-8u162-linux-arm32-vfp-hflt.tar.gz;"
 ssh $RASPBERRY_PI "cd bin; ln -s jdk1.8.0_162 jdk8;"
+ssh $RASPBERRY_PI "cd bin; rm -f jdk-8u162-linux-arm32-vfp-hflt.tar.gz;"
+
 
 echo "  ...maven";
 scp ./bin/apache-maven-3.5.3-bin.tar.gz $RASPBERRY_PI:bin
 ssh $RASPBERRY_PI "cd bin; tar xvzf apache-maven-3.5.3-bin.tar.gz;"
 ssh $RASPBERRY_PI "cd bin; ln -s apache-maven-3.5.3 apache-maven;"
+ssh $RASPBERRY_PI "cd bin; rm -f apache-maven-3.5.3-bin.tar.gz;"
 
 # create m2 folder - /home/<me>/m2
 # copy settings.xml from ./config to /home/<me>/m2
@@ -175,7 +180,7 @@ scp ./maven-settings.xml $RASPBERRY_PI:m2/settings.xml
 # git clone repository
 echo "Clone and test...";
 ssh $RASPBERRY_PI mkdir -p work
-ssh $RASPBERRY_PI "cd work; git clone git@github.com:brettonw/RaspberryPi.git; mvn clean test;"
+ssh $RASPBERRY_PI "cd work; git clone git@github.com:brettonw/RaspberryPi.git; cd RaspberryPi; mvn clean test;"
 
 # force update on all software packages (sudo apt-get update && sudo apt-get upgrade)
 echo "Update raspberry pi...";

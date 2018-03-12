@@ -2,6 +2,13 @@
 export JAVA_HOME="$HOME/bin/jdk8"
 export PATH=$JAVA_HOME/bin:$PATH
 
+# to build and run projects using Maven - the GPIO libraries require root access, so we have
+# to run the build with sudo. I want my own maven executable and settings, so that we don't
+# end up with a copy of the m2 cache in other places.
+function mvn {
+    sudo env "PATH=$PATH" $HOME/bin/apache-maven/bin/mvn --settings $HOME/m2/settings.xml $*;
+}
+
 # if we are not running interactively, don't do anything else
 case $- in
     *i*) ;;
@@ -20,12 +27,5 @@ function gitgo {
 # in my muscle memory now, so I keep things simple by defining it on every system I work on
 function ec {
     nano $*;
-}
-
-# to build and run projects using Maven - the GPIO libraries require root access, so we have
-# to run the build with sudo. I want my own maven executable and settings, so that we don't
-# end up with a copy of the m2 cache in other places.
-function mvn {
-    sudo env "PATH=$PATH" $HOME/bin/apache-maven/bin/mvn --settings $HOME/m2/settings.xml $*;
 }
 
