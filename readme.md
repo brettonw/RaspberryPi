@@ -1,10 +1,16 @@
 # Raspberry Pi
 
 ## Steps to set up a raspberry pi 3 for use with this project
-- setup raspberry pi, enable wifi or wired networking, expand filesystem, set language and locale
-- give it a unique hostname on the network
+### OPTION 1
+- from an already configured raspberry pi, use the sd card copier app from the desktop ([https://www.raspberrypi.org/forums/viewtopic.php?t=206661](won't work from command line) ) with the unique id's option checked.
+- put the duplicated card into the new raspberry pi and boot
+- from raspi-config (or preferences->configuration on the desktop), give the new raspberry pi a unique hostname on the network
+
+### OPTION 2
+- from NOOBS, setup raspberry pi as a new installation and reboot
+- from raspi-config, give it a unique hostname on the network
 - from raspi-config, enable ssh
-- from the config directory, run the setup-raspberry-pi.sh script
+- from the config directory, run `setup-raspberry-pi.sh <hostname>`
 
 ### it will...
 - create user on raspberry pi (<me>)
