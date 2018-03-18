@@ -3,7 +3,7 @@ package com.brettonw;
 import com.pi4j.io.gpio.*;
 import org.junit.Test;
 
-public class AppTest {
+public class BlinkTest {
     @Test
     public void testGPIO () throws InterruptedException {
         System.out.println ("<--Pi4J--> GPIO Control Example ... started.");
