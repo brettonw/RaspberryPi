@@ -125,7 +125,7 @@ public class PWM {
 	}
 
 	public void setPWMFreq(int freq) throws IOException {
-		// Sets the PWM frequency
+		// Sets the PWM frequency, see 7.3.3
 		double preScaleVal = 25_000_000.0; // 25MHz
 		preScaleVal /= 4096.0; // 12-bit
 		preScaleVal /= (float) freq;
@@ -162,7 +162,7 @@ public class PWM {
   from Adafruit_I2C import Adafruit_I2C
 
   # ============================================================================
-  # Adafruit PCA9685 16-Channel PWM Servo Driver
+  # Adafruit pca9685 16-Channel PWM Servo Driver
   # ============================================================================
 
   class PWM :
