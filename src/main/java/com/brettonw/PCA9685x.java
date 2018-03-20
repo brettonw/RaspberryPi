@@ -135,34 +135,21 @@ public class PCA9685x {
         i2cDevice.write (MODE1, (byte) (oldMode | RESTART));
     }
 
-    // motor controllers
-    public enum Direction {
-        FORWARD, REVERSE, FREE
-    }
-
     public enum Motor {
         MOTOR_1, MOTOR_2, MOTOR_3, MOTOR_4
     }
 
-    private void runMotor (int modulator, int forward, int backward, Direction direction, double speed) {
+    private void runMotor (int modulator, int forward, int backward, double speed) {
         try {
-            if (speed == 0.0) {
-                direction = Direction.FREE;
-            }
-            switch (direction) {
-                case FORWARD:
-                    setPin (forward, true);
-                    setPin (backward, false);
-                    break;
-                case REVERSE:
-                    setPin (forward, false);
-                    setPin (backward, true);
-                    break;
-                case FREE:
-                    setPin (forward, false);
-                    setPin (backward, false);
-                    speed = 0.0;
-                    break;
+            if (speed < 0.0) {
+                setPin (forward, false);
+                setPin (backward, true);
+            } else if (speed > 0.0) {
+                setPin (forward, true);
+                setPin (backward, false);
+            } else if (speed == 0.0) {
+                setPin (forward, false);
+                setPin (backward, false);
             }
             setChannel (modulator, 0, (int) (speed * (CHANNEL_RESOLUTION - 1.0)));
         }
@@ -171,23 +158,23 @@ public class PCA9685x {
         }
     }
 
-    private void runMotorInternal (Motor motor, Direction direction, double speed) {
+    private void runMotorInternal (Motor motor, double speed) {
         switch (motor) {
-            case MOTOR_1: runMotor (8, 9, 10, direction, speed); break;
-            case MOTOR_2: runMotor (13, 12, 11, direction, speed); break;
-            case MOTOR_3: runMotor (2, 3, 4, direction, speed); break;
-            case MOTOR_4: runMotor (7, 6, 5, direction, speed); break;
+            case MOTOR_1: runMotor (8, 9, 10, speed); break;
+            case MOTOR_2: runMotor (13, 12, 11, speed); break;
+            case MOTOR_3: runMotor (2, 3, 4, speed); break;
+            case MOTOR_4: runMotor (7, 6, 5, speed); break;
         }
     }
 
-    public void runMotor (Motor motor, Direction direction, double speed) {
-        log.debug ("Run " + motor.name () + " " + direction.name () + "@" + speed);
-        runMotorInternal (motor, direction, speed);
+    public void runMotor (Motor motor, double speed) {
+        log.debug ("Run " + motor.name () + "@" + speed);
+        runMotorInternal (motor, speed);
     }
 
     public void stopMotor (Motor motor) {
         log.debug ("Stop " + motor.name ());
-        runMotorInternal (motor, Direction.FREE, 0.0);
+        runMotorInternal (motor, 0.0);
     }
 
     public enum StepType {

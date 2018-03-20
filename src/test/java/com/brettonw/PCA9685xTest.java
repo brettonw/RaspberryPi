@@ -15,21 +15,21 @@ public class PCA9685xTest {
     public void testPCA9685x () {
         PCA9685x    pca9865x = new PCA9685x ();
 
-        for (int i = 0; i <= 4095; ++i) {
-            pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, PCA9685x.Direction.FORWARD, i / 4095.0);
+        for (int i = 0; i <= 4095; i += 4) {
+            pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, i / 4095.0);
             pca9865x.waitL (1);
         }
         pca9865x.waitD (10);
         pca9865x.stopMotor (PCA9685x.Motor.MOTOR_1);
         pca9865x.waitL (1);
-        /*
-        for (int i = 0; i <= 4095; i += 8) {
-            pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, PCA9685x.Direction.REVERSE, i / 4095.0);
+
+        for (int i = 0; i <= 4095; i += 4) {
+            pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, -i / 4095.0);
             pca9865x.waitL (1);
         }
+        pca9865x.waitD (10);
         pca9865x.stopMotor (PCA9685x.Motor.MOTOR_1);
         pca9865x.waitL (1);
-        */
     }
 
 }
