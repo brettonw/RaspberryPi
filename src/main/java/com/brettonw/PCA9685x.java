@@ -164,7 +164,7 @@ public class PCA9685x {
                     speed = 0.0;
                     break;
             }
-            setChannel (modulator, 0, (int) (speed * 4_096.0));
+            setChannel (modulator, 0, (int) (speed * (CHANNEL_RESOLUTION - 1.0)));
         }
         catch (Exception exception) {
             log.error (exception);

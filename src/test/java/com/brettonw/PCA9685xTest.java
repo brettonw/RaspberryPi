@@ -15,10 +15,10 @@ public class PCA9685xTest {
     public void testPCA9685x () {
         PCA9685x    pca9865x = new PCA9685x ();
 
-        pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, PCA9685x.Direction.FORWARD, 1.0);
-        pca9865x.waitD (3.0);
-        pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, PCA9685x.Direction.REVERSE, 1.0);
-        pca9865x.waitD (3.0);
+        pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, PCA9685x.Direction.FORWARD, 0.8);
+        pca9865x.waitD (10.0);
+        pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, PCA9685x.Direction.REVERSE, 0.8);
+        pca9865x.waitD (10.0);
         pca9865x.stopMotor (PCA9685x.Motor.MOTOR_1);
     }
 
