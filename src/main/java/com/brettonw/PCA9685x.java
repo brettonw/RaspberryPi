@@ -92,6 +92,9 @@ public class PCA9685x {
             i2cDevice.write (MODE1, (byte)mode1);
             // the chip takes 500 microseconds to recover from turning off the SLEEP bit
             waitL (1);
+
+            // setup
+            setOutputModulationFrequency (frequency);
         }
         catch (Exception exception) {
             log.error ("Failure to connect to i2c@" + address, exception);

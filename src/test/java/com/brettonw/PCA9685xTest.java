@@ -19,17 +19,18 @@ public class PCA9685xTest {
             pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, i / 4095.0);
             pca9865x.waitL (1);
         }
-        pca9865x.waitD (10);
+        pca9865x.waitD (3);
         pca9865x.stopMotor (PCA9685x.Motor.MOTOR_1);
-        pca9865x.waitL (1);
+        pca9865x.waitD (1);
 
         for (int i = 0; i <= 4095; i += 4) {
             pca9865x.runMotor (PCA9685x.Motor.MOTOR_1, -i / 4095.0);
             pca9865x.waitL (1);
         }
-        pca9865x.waitD (10);
+        pca9865x.waitD (3);
         pca9865x.stopMotor (PCA9685x.Motor.MOTOR_1);
         pca9865x.waitL (1);
+        pca9865x.waitD (1);
     }
 
 }
