@@ -144,14 +144,16 @@ public class PCA9685x {
             if (speed < 0.0) {
                 setPin (forward, false);
                 setPin (backward, true);
+                setChannel (modulator, 0, (int) (-speed * (CHANNEL_RESOLUTION - 1.0)));
             } else if (speed > 0.0) {
                 setPin (forward, true);
                 setPin (backward, false);
+                setChannel (modulator, 0, (int) (speed * (CHANNEL_RESOLUTION - 1.0)));
             } else if (speed == 0.0) {
                 setPin (forward, false);
                 setPin (backward, false);
+                setChannel (modulator, 0, 0);
             }
-            setChannel (modulator, 0, (int) (speed * (CHANNEL_RESOLUTION - 1.0)));
         }
         catch (Exception exception) {
             log.error (exception);
