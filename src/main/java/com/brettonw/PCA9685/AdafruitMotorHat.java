@@ -149,4 +149,17 @@ public class AdafruitMotorHat extends PCA9685 {
     public AdafruitMotorHat stepMotorWhole (Stepper stepper, StepValue[] steps) {
         return stepMotorWhole (stepper, steps, DEFAULT_DELAY);
     }
+
+    public AdafruitMotorHat stepMotorStop (Stepper stepper) {
+        switch (stepper) {
+            case STEPPER_1:
+                runMotorInternal (Motor.MOTOR_1, 0);
+                runMotorInternal (Motor.MOTOR_2, 0);
+                break;
+            case STEPPER_2:
+                runMotorInternal (Motor.MOTOR_3, 0);
+                runMotorInternal (Motor.MOTOR_4, 0);
+                break;
+        }
+    }
 }
