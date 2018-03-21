@@ -5,12 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-/**
- * DC Motor demo
- * <p>
- * I used motors like https://www.adafruit.com/product/2941
- * or https://www.adafruit.com/product/711
- */
 public class AdafruitMotorHatTest {
     protected static final Logger log = LogManager.getLogger (AdafruitMotorHatTest.class);
 
