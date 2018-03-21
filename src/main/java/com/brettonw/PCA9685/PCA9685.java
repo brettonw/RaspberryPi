@@ -59,7 +59,7 @@ public class PCA9685 {
             // get the i2c bus, and device
             i2cBus = I2CFactory.getInstance (I2CBus.BUS_1);
             i2cDevice = i2cBus.getDevice (address);
-            log.debug ("Successfully connected to i2c@" + address);
+            log.debug ("Successfully connected to PCA9685 on i2c@" + address);
 
             // init, everything off
             setChannel (CHANNEL_All, 0, 0);
@@ -88,7 +88,7 @@ public class PCA9685 {
     }
 
     protected void setChannel (int channel, int on, int off) throws IOException {
-        log.trace ("Set Channel (" + channel + ") - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
+        log.trace (channel + " - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
         int channelOffset = channel * CHANNEL_OFFSET_MULTIPLIER;
         i2cDevice.write (CHANNEL_BASE_ON_L + channelOffset, (byte) (on & 0xFF));
         i2cDevice.write (CHANNEL_BASE_ON_H + channelOffset, (byte) (on >> 8));
@@ -108,7 +108,7 @@ public class PCA9685 {
             // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.5)
             int preScale = ((int) (Math.round (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * frequency)))) - 1;
             preScale = Math.min (Math.max (MIN_PRE_SCALE, preScale), MAX_PRE_SCALE);
-            log.debug ("Setting modulation update frequency to " + frequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
+            log.debug ("@" + frequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
 
             // PRE_SCALE can only be set when the SLEEP bit of the MODE1 register is set to logic 1.
             int oldMode = i2cDevice.read (MODE1);

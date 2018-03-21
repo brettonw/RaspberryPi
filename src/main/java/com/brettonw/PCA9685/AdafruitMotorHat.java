@@ -62,13 +62,13 @@ public class AdafruitMotorHat extends PCA9685 {
     }
 
     public PCA9685 runMotor (Motor motor, double speed) {
-        log.debug ("Run " + motor.name () + "@" + speed);
+        log.debug (motor.name () + "@" + speed);
         runMotorInternal (motor, speed);
         return this;
     }
 
     public PCA9685 stopMotor (Motor motor) {
-        log.debug ("Stop " + motor.name ());
+        log.debug (motor.name ());
         runMotorInternal (motor, 0.0);
         return this;
     }
