@@ -52,7 +52,7 @@ public class AdafruitMotorHatTest {
     public void testStepper () {
         AdafruitMotorHat.StepValue[] steps = AdafruitMotorHat.makeSteps (4);
         for (int i = 0; i < 100; ++i) {
-            motorHat.stepMotorWhole (AdafruitMotorHat.Stepper.STEPPER_1, steps, 0);
+            motorHat.stepMotorWhole (AdafruitMotorHat.Stepper.STEPPER_1, steps, 1);
         }
         motorHat.stepMotorStop (AdafruitMotorHat.Stepper.STEPPER_1);
         for (int i = 0; i < 100; ++i) {
