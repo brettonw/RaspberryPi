@@ -161,5 +161,6 @@ public class AdafruitMotorHat extends PCA9685 {
                 runMotorInternal (Motor.MOTOR_4, 0);
                 break;
         }
+        return this;
     }
 }
