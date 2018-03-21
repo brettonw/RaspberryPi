@@ -88,7 +88,7 @@ public class PCA9685 {
     }
 
     protected void setChannel (int channel, int on, int off) throws IOException {
-        log.debug ("Set Channel (" + channel + ") - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
+        log.trace ("Set Channel (" + channel + ") - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
         int channelOffset = channel * CHANNEL_OFFSET_MULTIPLIER;
         i2cDevice.write (CHANNEL_BASE_ON_L + channelOffset, (byte) (on & 0xFF));
         i2cDevice.write (CHANNEL_BASE_ON_H + channelOffset, (byte) (on >> 8));
