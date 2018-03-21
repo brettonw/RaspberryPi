@@ -81,10 +81,10 @@ public class AdafruitMotorHat extends PCA9685 {
 
     private static final int DEFAULT_DELAY = 10;
 
-    public class StepValue {
+    public static class StepValue {
         public double motor1;
         public double motor2;
-        public void set (double motor1, double motor2) {
+        public StepValue (double motor1, double motor2) {
             this.motor1 = motor1;
             this.motor2 = motor2;
         }
@@ -99,7 +99,7 @@ public class AdafruitMotorHat extends PCA9685 {
             double stepAngle = (Math.PI * 2.0) / stepsPerCycle;
             for (int i = 0; i < stepsPerCycle; ++i) {
                 double step = stepAngle * i;
-                steps[i].set (Math.cos (step), Math.sin (step));
+                steps[i] = new StepValue (Math.cos (step), Math.sin (step));
             }
             return steps;
         }
