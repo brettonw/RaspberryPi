@@ -25,8 +25,8 @@ public class AdafruitMotorHatTest {
         log.debug ("RUN (" + motor.name () + ")");
         if (motorHat.hasDevice ()) {
             log.debug ("FORWARD");
-            for (int i = 0; i <= PCA9685.CHANNEL_HIGH; i += 16) {
-                motorHat.runMotor (motor, i / 4095.0);
+            for (int i = 0; i <= 1000; i ++) {
+                motorHat.runMotor (motor, i / 1000.0);
                 Utility.waitL (1);
             }
             Utility.waitD (5);
@@ -34,8 +34,8 @@ public class AdafruitMotorHatTest {
             Utility.waitD (1);
 
             log.debug ("REVERSE");
-            for (int i = 0; i <= 4095; i += 16) {
-                motorHat.runMotor (motor, -i / 4095.0);
+            for (int i = 0; i <= 1000; i++) {
+                motorHat.runMotor (motor, i / 1000.0);
                 Utility.waitL (1);
             }
             Utility.waitD (5);
