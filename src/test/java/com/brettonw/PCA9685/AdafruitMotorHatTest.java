@@ -39,11 +39,24 @@ public class AdafruitMotorHatTest {
     }
 
     @Test
-    public void test1 () {
+    public void testRunMotors () {
+        /*
         runMotor (AdafruitMotorHat.Motor.MOTOR_1);
         runMotor (AdafruitMotorHat.Motor.MOTOR_2);
         runMotor (AdafruitMotorHat.Motor.MOTOR_3);
         runMotor (AdafruitMotorHat.Motor.MOTOR_4);
+        */
+    }
+
+    @Test
+    public void testStepper () {
+        AdafruitMotorHat.StepValue[] steps = AdafruitMotorHat.makeSteps (1);
+        for (int i = 0; i < 10; ++i) {
+            motorHat.stepMotorWhole (AdafruitMotorHat.Stepper.STEPPER_1, steps);
+        }
+        for (int i = 0; i < 10; ++i) {
+            motorHat.stepMotorWhole (AdafruitMotorHat.Stepper.STEPPER_2, steps);
+        }
     }
 
 }

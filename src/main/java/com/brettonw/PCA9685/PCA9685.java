@@ -18,9 +18,6 @@ public class PCA9685 {
     // registers (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - table 4)
     protected static final int MODE1 = 0x00;
     protected static final int MODE2 = 0x01;
-    protected static final int SUBADR1 = 0x02;
-    protected static final int SUBADR2 = 0x03;
-    protected static final int SUBADR3 = 0x04;
     protected static final int PRE_SCALE = 0xFE;
 
     // these registers are used as the base address of the full set of supported channels,
@@ -43,7 +40,6 @@ public class PCA9685 {
     protected final static int ALLCALL = 0x01;
 
     // bits (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - mode 2, table 6)
-    protected final static int INVRT = 0x10;
     protected final static int OUTDRV = 0x04;
 
     // internal variables

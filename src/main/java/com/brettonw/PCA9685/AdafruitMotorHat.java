@@ -1,5 +1,6 @@
 package com.brettonw.PCA9685;
 
+import com.brettonw.Utility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,24 +62,91 @@ public class AdafruitMotorHat extends PCA9685 {
         }
     }
 
-    public PCA9685 runMotor (Motor motor, double speed) {
-        log.debug (motor.name () + "@" + speed);
+    public AdafruitMotorHat runMotor (Motor motor, double speed) {
+        // speed is just setting the PWM in the 12-bit range (0..1) = (stopped..full speed)
+        log.debug (motor.name () + "@" + String.format ("%.04f", speed));
         runMotorInternal (motor, speed);
         return this;
     }
 
-    public PCA9685 stopMotor (Motor motor) {
+    public AdafruitMotorHat stopMotor (Motor motor) {
         log.debug (motor.name ());
         runMotorInternal (motor, 0.0);
         return this;
     }
 
-    public enum StepType {
-        SINGLE, DOUBLE, INTERLEAVE, MICRO
+    public enum Stepper {
+        STEPPER_1, STEPPER_2
     }
 
-    public enum StepperMotor {
-        STEPPER_MOTOR_1, STEPPER_MOTOR_2
+    private static final int DEFAULT_DELAY = 10;
+
+    public class StepValue {
+        public double motor1;
+        public double motor2;
+        public void set (double motor1, double motor2) {
+            this.motor1 = motor1;
+            this.motor2 = motor2;
+        }
     }
 
+    public static StepValue[] makeSteps (int stepsPerCycle) {
+        // make and return an array of steps based on how many substeps we want
+        // double check stepsPerCycle is a power of 2
+        if ((stepsPerCycle & (stepsPerCycle - 1)) == 0) {
+            stepsPerCycle *= 4;
+            StepValue steps[] = new StepValue[stepsPerCycle];
+            double stepAngle = (Math.PI * 2.0) / stepsPerCycle;
+            for (int i = 0; i < stepsPerCycle; ++i) {
+                double step = stepAngle * i;
+                steps[i].set (Math.cos (step), Math.sin (step));
+            }
+            return steps;
+        }
+        log.error ("Invalid stepsPerCycle - must be a power of 2");
+        return null;
+    }
+
+    private void stepMotorInternal (Stepper stepper, StepValue[] steps, int stepIndex) {
+        switch (stepper) {
+            case STEPPER_1:
+                runMotorInternal (Motor.MOTOR_1, steps[stepIndex].motor1);
+                runMotorInternal (Motor.MOTOR_2, steps[stepIndex].motor2);
+                break;
+            case STEPPER_2:
+                runMotorInternal (Motor.MOTOR_3, steps[stepIndex].motor1);
+                runMotorInternal (Motor.MOTOR_4, steps[stepIndex].motor2);
+                break;
+        }
+    }
+
+    public AdafruitMotorHat stepMotor (Stepper stepper, StepValue[] steps, int stepIndex) {
+        log.debug (stepper.name () + "@" + stepIndex);
+        int mask = steps.length - 1;
+        stepMotorInternal (stepper, steps, stepIndex & mask);
+        return this;
+    }
+
+    public AdafruitMotorHat stepMotor (Stepper stepper, StepValue[] steps, int stepIndexStart, int stepCount, int delay) {
+        log.debug (stepper.name () + "@" + stepIndexStart + " for " + stepCount + " steps");
+        int stepIndexEnd = stepIndexStart + stepCount;
+        int mask = steps.length - 1;
+        for (int i = stepIndexStart; i < stepIndexEnd; ++i) {
+            stepMotorInternal (stepper, steps, i & mask);
+            Utility.waitL (delay);
+        }
+        return this;
+    }
+
+    public AdafruitMotorHat stepMotor (Stepper stepper, StepValue[] steps, int stepIndexStart, int stepCount) {
+        return stepMotor (stepper, steps, stepIndexStart, stepCount, DEFAULT_DELAY);
+    }
+
+    public AdafruitMotorHat stepMotorWhole (Stepper stepper, StepValue[] steps, int delay) {
+        return stepMotor (stepper, steps, 0, steps.length, delay);
+    }
+
+    public AdafruitMotorHat stepMotorWhole (Stepper stepper, StepValue[] steps) {
+        return stepMotorWhole (stepper, steps, DEFAULT_DELAY);
+    }
 }

@@ -8,7 +8,7 @@ import org.junit.Test;
  * I used motors like https://www.adafruit.com/product/2941
  * or https://www.adafruit.com/product/711
  */
-public class AdafruitServerDriverTest {
+public class AdafruitServoDriverTest {
 
 
     @Test
