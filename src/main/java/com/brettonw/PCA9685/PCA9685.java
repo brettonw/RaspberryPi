@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 
 // This is a software interface for the PCA9685. It is a 16-channel Pulse Width Modulator (PWM)
-// Controller (designed to drive LEDs) with 12 bits of resolution, and controlled over hte I2C bus.
+// Controller (designed to drive LEDs) with 12 bits of resolution, and controlled over the I2C bus.
 // The 9685 is used in the Adafruit motor hat and the servo driver board
 // https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf
 public class PCA9685 {
@@ -50,19 +50,6 @@ public class PCA9685 {
     protected I2CBus i2cBus;
     protected I2CDevice i2cDevice;
 
-    // internal wait functions
-    public final static void waitL (long milliseconds) {
-        try {
-            Thread.sleep (milliseconds);
-        } catch (InterruptedException exception) {
-            log.error (exception);
-        }
-    }
-
-    public final static void waitD (double seconds) {
-        waitL (Math.round (seconds * 1_000L));
-    }
-
     public PCA9685 (int address) {
         this (address, DEFAULT_OUTPUT_MODULATION_FREQUENCY);
     }
@@ -79,13 +66,13 @@ public class PCA9685 {
             i2cDevice.write (MODE2, (byte) OUTDRV);
             i2cDevice.write (MODE1, (byte) ALLCALL);
             // the chip takes 500 microseconds to recover from changes to the control registers
-            waitL (1);
+            Thread.sleep (1);
 
             // wake up
             int mode1 = i2cDevice.read (MODE1) & ~SLEEP;
             i2cDevice.write (MODE1, (byte)mode1);
             // the chip takes 500 microseconds to recover from turning off the SLEEP bit
-            waitL (1);
+            Thread.sleep (1);
 
             // setup
             setOutputModulationFrequency (frequency);
@@ -117,21 +104,25 @@ public class PCA9685 {
     private static final int MAX_PRE_SCALE = 0xFF;
 
     private void setOutputModulationFrequency (int frequency) throws IOException {
-        // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.5)
-        int preScale = ((int) (Math.round (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * frequency)))) - 1;
-        preScale = Math.min (Math.max (MIN_PRE_SCALE, preScale), MAX_PRE_SCALE);
-        log.debug ("Setting modulation update frequency to " + frequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
+        try {
+            // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.5)
+            int preScale = ((int) (Math.round (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * frequency)))) - 1;
+            preScale = Math.min (Math.max (MIN_PRE_SCALE, preScale), MAX_PRE_SCALE);
+            log.debug ("Setting modulation update frequency to " + frequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
 
-        // PRE_SCALE can only be set when the SLEEP bit of the MODE1 register is set to logic 1.
-        int oldMode = i2cDevice.read (MODE1);
-        byte newMode = (byte) ((oldMode & 0x7F) | SLEEP);
-        i2cDevice.write (MODE1, newMode);
-        i2cDevice.write (PRE_SCALE, (byte) (Math.floor (preScale)));
-        i2cDevice.write (MODE1, (byte) oldMode);
+            // PRE_SCALE can only be set when the SLEEP bit of the MODE1 register is set to logic 1.
+            int oldMode = i2cDevice.read (MODE1);
+            byte newMode = (byte) ((oldMode & 0x7F) | SLEEP);
+            i2cDevice.write (MODE1, newMode);
+            i2cDevice.write (PRE_SCALE, (byte) (Math.floor (preScale)));
+            i2cDevice.write (MODE1, (byte) oldMode);
 
-        // SLEEP bit must be 0 for at least 500us before 1 is written into the RESTART bit.
-        waitL (1);
-        i2cDevice.write (MODE1, (byte) (oldMode | RESTART));
+            // SLEEP bit must be 0 for at least 500us before 1 is written into the RESTART bit.
+            Thread.sleep (1);
+            i2cDevice.write (MODE1, (byte) (oldMode | RESTART));
+        } catch (InterruptedException exception) {
+            log.error (exception);
+        }
     }
 
 

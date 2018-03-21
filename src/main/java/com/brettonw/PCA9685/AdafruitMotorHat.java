@@ -1,5 +1,8 @@
 package com.brettonw.PCA9685;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 
 // DC and Stepper Motor Hat
@@ -8,6 +11,7 @@ import java.io.IOException;
 // and 2 6612 H-bridge motor controllers driven off the modulated outputs
 // https://cdn-shop.adafruit.com/datasheets/TB6612FNG_datasheet_en_20121101.pdf
 public class AdafruitMotorHat extends PCA9685 {
+    protected static final Logger log = LogManager.getLogger (AdafruitMotorHat.class);
 
     public static final int DEFAULT_ADDRESS = 0x60;
 
