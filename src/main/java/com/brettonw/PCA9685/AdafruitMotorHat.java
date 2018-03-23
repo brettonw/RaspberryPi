@@ -133,7 +133,9 @@ public class AdafruitMotorHat extends PCA9685 {
         int mask = steps.length - 1;
         for (int i = stepIndexStart; i < stepIndexEnd; ++i) {
             stepMotorInternal (stepper, steps, i & mask);
-            Utility.waitL (delay);
+            if (delay >= 0) {
+                Utility.waitL (delay);
+            }
         }
         return this;
     }
