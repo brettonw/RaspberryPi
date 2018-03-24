@@ -5,6 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 // DC and Stepper Motor Hat
 // https://learn.adafruit.com/adafruit-dc-and-stepper-motor-hat-for-raspberry-pi/overview
@@ -107,32 +109,34 @@ public class AdafruitMotorHat extends PCA9685 {
         return null;
     }
 
+    private static final Map<Stepper, Motor[]> STEPPER_MOTOR_INDEX = new HashMap <Stepper, Motor[]> (2) {{
+        put (Stepper.STEPPER_1, new Motor[]{ Motor.MOTOR_1, Motor.MOTOR_2 });
+        put (Stepper.STEPPER_2, new Motor[]{ Motor.MOTOR_3, Motor.MOTOR_4 });
+
+    }};
+
     private void stepMotorInternal (Stepper stepper, StepValue[] steps, int stepIndex) {
-        switch (stepper) {
-            case STEPPER_1:
-                runMotorInternal (Motor.MOTOR_1, steps[stepIndex].motor1);
-                runMotorInternal (Motor.MOTOR_2, steps[stepIndex].motor2);
-                break;
-            case STEPPER_2:
-                runMotorInternal (Motor.MOTOR_3, steps[stepIndex].motor1);
-                runMotorInternal (Motor.MOTOR_4, steps[stepIndex].motor2);
-                break;
+        // ensure that the step index is valid
+        int mask = steps.length - 1;
+        do {
+            stepIndex = (stepIndex + steps.length) & mask;
         }
+        while (stepIndex < 0);
+        runMotorInternal (STEPPER_MOTOR_INDEX.get (stepper)[0], steps[stepIndex].motor1);
+        runMotorInternal (STEPPER_MOTOR_INDEX.get (stepper)[1], steps[stepIndex].motor2);
     }
 
     public AdafruitMotorHat stepMotor (Stepper stepper, StepValue[] steps, int stepIndex) {
         log.debug (stepper.name () + "@" + stepIndex);
-        int mask = steps.length - 1;
-        stepMotorInternal (stepper, steps, stepIndex & mask);
+        stepMotorInternal (stepper, steps, stepIndex);
         return this;
     }
 
     public AdafruitMotorHat stepMotor (Stepper stepper, StepValue[] steps, int stepIndexStart, int stepCount, int delay) {
         log.debug (stepper.name () + "@" + stepIndexStart + " for " + stepCount + " steps");
         int stepIndexEnd = stepIndexStart + stepCount;
-        int mask = steps.length - 1;
         for (int i = stepIndexStart; i < stepIndexEnd; ++i) {
-            stepMotorInternal (stepper, steps, i & mask);
+            stepMotorInternal (stepper, steps, i);
             if (delay >= 0) {
                 Utility.waitL (delay);
             }
