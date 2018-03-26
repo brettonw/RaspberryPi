@@ -1,5 +1,6 @@
 package com.brettonw.PCA9685;
 
+import com.brettonw.Utility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -56,7 +57,27 @@ public class AdafruitMotorHatTest {
 
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
         log.info ("Full step backward");
-        stepper.turn (-1.0, 200.0);
+        //stepper.turn (-1.0, 200.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
+        stepper.step (StepDirection.BACKWARD);
+        Utility.waitD (1.0);
         stepper.stop ();
 
 /*
