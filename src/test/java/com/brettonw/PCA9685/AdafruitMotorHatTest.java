@@ -57,9 +57,11 @@ public class AdafruitMotorHatTest {
         for (int j = 0; j < 5; ++j) {
             for (int i = 0; i <= 100; ++i) {
                 servoDriver.setPosition (0, i / 100.0);
+                Utility.waitL (5);
             }
             for (int i = 100; i >= 0; --i) {
                 servoDriver.setPosition (0, i / 100.0);
+                Utility.waitL (5);
             }
         }
     }
