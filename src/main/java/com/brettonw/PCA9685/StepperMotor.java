@@ -92,7 +92,8 @@ public class StepperMotor {
         // time is in minutes (so RPM)
         int millisecondsDelayPerStep = (int) Math.round ((millisecondsPerMinute * time) / stepCount);
         int direction = (revolutions >= 0) ? 1 : -1;
-        for (int i = 0; i < stepCount; ++stepCount) {
+        log.debug (stepCount + " steps (direction: " + direction + ", delay: " + millisecondsDelayPerStep + ")");
+        for (int i = 0; i < stepCount; ++i) {
             step (direction);
             Utility.waitL (millisecondsDelayPerStep);
         }
