@@ -15,4 +15,8 @@ public class AdafruitServoDriver extends PCA9685 {
         super (address);
     }
 
+    public AdafruitServoDriver setPosition (int servoId, double position) {
+        setChannelPulse (servoId, 0, (int) Math.round (position * CHANNEL_HIGH));
+        return this;
+    }
 }

@@ -125,13 +125,13 @@ public class PWM {
 	}
 
 	public void setPWMFreq(int freq) throws IOException {
-		// Sets the PWM frequency, see 7.3.3
+		// Sets the PWM pulseFrequency, see 7.3.3
 		double preScaleVal = 25_000_000.0; // 25MHz
 		preScaleVal /= 4096.0; // 12-bit
 		preScaleVal /= (float) freq;
 		preScaleVal -= 1.0;
 		if (verbose) {
-			System.out.println("Setting PWM frequency to " + freq + " Hz");
+			System.out.println("Setting PWM pulseFrequency to " + freq + " Hz");
 			System.out.println("Estimated pre-scale:" + preScaleVal);
 		}
 		double preScale = Math.floor(preScaleVal + 0.5);

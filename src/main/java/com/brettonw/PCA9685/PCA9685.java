@@ -1,5 +1,6 @@
 package com.brettonw.PCA9685;
 
+import com.brettonw.Utility;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
@@ -45,12 +46,13 @@ public class PCA9685 {
     // internal variables
     protected I2CBus i2cBus;
     protected I2CDevice i2cDevice;
+    protected int pulseFrequency;
 
     public PCA9685 (int address) {
-        this (address, DEFAULT_OUTPUT_MODULATION_FREQUENCY);
+        this (address, DEFAULT_PULSE_FREQUENCY);
     }
 
-    public PCA9685 (int address, int frequency) {
+    public PCA9685 (int address, int pulseFrequency) {
         try {
             // get the i2c bus, and device
             i2cBus = I2CFactory.getInstance (I2CBus.BUS_1);
@@ -58,7 +60,7 @@ public class PCA9685 {
             log.debug ("Successfully connected to PCA9685 on i2c@" + address);
 
             // init, everything off
-            setChannel (CHANNEL_All, 0, 0);
+            setChannelPulse (CHANNEL_All, 0, 0);
             i2cDevice.write (MODE2, (byte) OUTDRV);
             i2cDevice.write (MODE1, (byte) ALLCALL);
             // the chip takes 500 microseconds to recover from changes to the control registers
@@ -71,7 +73,7 @@ public class PCA9685 {
             Thread.sleep (1);
 
             // setup
-            setOutputModulationFrequency (frequency);
+            setPulseFrequency (pulseFrequency);
         }
         catch (Exception exception) {
             log.error ("Failure to connect to i2c@" + address, exception);
@@ -83,42 +85,76 @@ public class PCA9685 {
         return (i2cDevice != null);
     }
 
-    protected void setChannel (int channel, int on, int off) throws IOException {
-        log.trace (channel + " - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
-        int channelOffset = channel * CHANNEL_OFFSET_MULTIPLIER;
-        i2cDevice.write (CHANNEL_BASE_ON_L + channelOffset, (byte) (on & 0xFF));
-        i2cDevice.write (CHANNEL_BASE_ON_H + channelOffset, (byte) (on >> 8));
-        i2cDevice.write (CHANNEL_BASE_OFF_L + channelOffset, (byte) (off & 0xFF));
-        i2cDevice.write (CHANNEL_BASE_OFF_H + channelOffset, (byte) (off >> 8));
+    /**
+     * set a channel's pulse parameters - this applies per tick of the clock (set by the
+     * pulse frequency).
+     *
+     * @param channel - which channel of the PCM will be updated
+     * @param on      - when to turn the pulse on within the tick, out of 4096
+     * @param off     - when to turn the pulse off within the tick, out of 4096, off must be greater than on
+     * @throws IOException
+     */
+    protected void setChannelPulse (int channel, int on, int off) {
+        try {
+            if (off >= on) {
+                log.trace (channel + " - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
+                int channelOffset = channel * CHANNEL_OFFSET_MULTIPLIER;
+                i2cDevice.write (CHANNEL_BASE_ON_L + channelOffset, (byte) (on & 0xFF));
+                i2cDevice.write (CHANNEL_BASE_ON_H + channelOffset, (byte) (on >> 8));
+                i2cDevice.write (CHANNEL_BASE_OFF_L + channelOffset, (byte) (off & 0xFF));
+                i2cDevice.write (CHANNEL_BASE_OFF_H + channelOffset, (byte) (off >> 8));
+            } else {
+                log.error ("Invalid pulse parameters - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
+            }
+        } catch (IOException exception) {
+            log.error (exception);
+        }
     }
 
-    // values used for setting the modulation update frequency
-    private final static int DEFAULT_OUTPUT_MODULATION_FREQUENCY = 1_600;
+    /**
+     * set a channel's pulse parameters - this applies per tick of the clock (set by the
+     * pulse frequency).
+     *
+     * @param channel - which channel of the PCM will be updated
+     * @param width   - proportion of the pulse to be on, 0-4_095
+     * @throws IOException
+     */
+    protected void setChannelPulse (int channel, int width) {
+        setChannelPulse (channel, 0, width);
+    }
+
+    // values used for setting the pulse frequency, the default is 1ms per cycle
+    private final static int DEFAULT_PULSE_FREQUENCY = 1_000;
     private static final double CLOCK_FREQUENCY = 25_000_000.0; // 25MHz
     private static final double CHANNEL_RESOLUTION = 4_096.0;   // 12-bit precision
     private static final int MIN_PRE_SCALE = 0x03;
     private static final int MAX_PRE_SCALE = 0xFF;
 
-    private void setOutputModulationFrequency (int frequency) throws IOException {
-        try {
-            // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.5)
-            int preScale = ((int) (Math.round (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * frequency)))) - 1;
-            preScale = Math.min (Math.max (MIN_PRE_SCALE, preScale), MAX_PRE_SCALE);
-            log.debug ("@" + frequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
+    /**
+     * Set the frequency of pulses across the whole controller - each channel has 12-bits
+     * of resolution (4,096 division) for setting the pulse duration within the cycle
+     * @param pulseFrequency
+     * @throws IOException
+     */
+    public void setPulseFrequency (int pulseFrequency) throws IOException {
+        this.pulseFrequency = pulseFrequency;
 
-            // PRE_SCALE can only be set when the SLEEP bit of the MODE1 register is set to logic 1.
-            int oldMode = i2cDevice.read (MODE1);
-            byte newMode = (byte) ((oldMode & 0x7F) | SLEEP);
-            i2cDevice.write (MODE1, newMode);
-            i2cDevice.write (PRE_SCALE, (byte) (Math.floor (preScale)));
-            i2cDevice.write (MODE1, (byte) oldMode);
+        // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.5)
+        int preScale = ((int) (Math.round (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * pulseFrequency)))) - 1;
+        log.trace ("pre-scale:" + String.format ("0x%02x", preScale));
+        preScale = Math.min (Math.max (MIN_PRE_SCALE, preScale), MAX_PRE_SCALE);
+        log.debug ("@" + pulseFrequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
 
-            // SLEEP bit must be 0 for at least 500us before 1 is written into the RESTART bit.
-            Thread.sleep (1);
-            i2cDevice.write (MODE1, (byte) (oldMode | RESTART));
-        } catch (InterruptedException exception) {
-            log.error (exception);
-        }
+        // PRE_SCALE can only be set when the SLEEP bit of the MODE1 register is set to logic 1.
+        int oldMode = i2cDevice.read (MODE1);
+        byte newMode = (byte) ((oldMode & 0x7F) | SLEEP);
+        i2cDevice.write (MODE1, newMode);
+        i2cDevice.write (PRE_SCALE, (byte) (Math.floor (preScale)));
+        i2cDevice.write (MODE1, (byte) oldMode);
+
+        // SLEEP bit must be 0 for at least 500us before 1 is written into the RESTART bit.
+        Utility.waitL (1);
+        i2cDevice.write (MODE1, (byte) (oldMode | RESTART));
     }
 
 

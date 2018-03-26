@@ -25,7 +25,7 @@ public class AdafruitMotorHat extends PCA9685 {
     }
 
     private void setPin (int pin, boolean high) throws IOException {
-        setChannel (pin, high ? CHANNEL_HIGH : 0, high ? 0 : CHANNEL_HIGH);
+        setChannelPulse (pin, high ? CHANNEL_HIGH : 0, high ? 0 : CHANNEL_HIGH);
     }
 
     private void runMotor (int modulator, int frontPin, int backPin, double speed) {
@@ -33,15 +33,15 @@ public class AdafruitMotorHat extends PCA9685 {
             if (speed < 0.0) {
                 setPin (frontPin, false);
                 setPin (backPin, true);
-                setChannel (modulator, 0, (int) (-speed * CHANNEL_HIGH));
+                setChannelPulse (modulator, 0, (int) (-speed * CHANNEL_HIGH));
             } else if (speed > 0.0) {
                 setPin (frontPin, true);
                 setPin (backPin, false);
-                setChannel (modulator, 0, (int) (speed * CHANNEL_HIGH));
+                setChannelPulse (modulator, 0, (int) (speed * CHANNEL_HIGH));
             } else if (speed == 0.0) {
                 setPin (frontPin, false);
                 setPin (backPin, false);
-                setChannel (modulator, 0, 0);
+                setChannelPulse (modulator, 0, 0);
             }
         }
         catch (Exception exception) {
