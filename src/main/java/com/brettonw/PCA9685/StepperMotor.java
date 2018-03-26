@@ -50,7 +50,7 @@ public class StepperMotor {
                     new StepValue (1, -1)
                 };
                 break;
-            case SUB_STEP: {
+            case MICRO_STEP: {
                 steps = new StepValue[8 << subStepShift];
                 double stepAngle = (Math.PI * 2.0) / steps.length;
                 for (int i = 0; i < steps.length; ++i) {

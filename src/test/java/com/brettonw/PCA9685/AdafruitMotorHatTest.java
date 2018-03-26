@@ -66,21 +66,21 @@ public class AdafruitMotorHatTest {
         stepper.turn (-1.0, 5.0);
         stepper.stop ();
 
-        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP);
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP);
         log.info ("Sub step forward");
         stepper.turn (1.0, 5.0);
         log.info ("Sub step backward");
         stepper.turn (-1.0, 5.0);
         stepper.stop ();
 
-        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP, 1);
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP, 1);
         log.info ("Sub step forward");
         stepper.turn (1.0, 5.0);
         log.info ("Sub step backward");
         stepper.turn (-1.0, 5.0);
         stepper.stop ();
 
-        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP, 2);
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP, 2);
         log.info ("Sub step forward");
         stepper.turn (1.0, 5.0);
         log.info ("Sub step backward");
