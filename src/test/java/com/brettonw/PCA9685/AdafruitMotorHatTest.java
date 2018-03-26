@@ -89,7 +89,7 @@ public class AdafruitMotorHatTest {
         stepper.turn (-1.0, 5.0);
         stepper.stop ();
 */
-        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP, 1);
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP);
         log.info ("Sub step forward");
         startTime = System.currentTimeMillis ();
         stepper.turn (1.0);
