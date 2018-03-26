@@ -52,6 +52,20 @@ public class AdafruitMotorHatTest {
     @Test
     public void testStepper () {
 
+        try {
+            com.olivierld.AdafruitMotorHat mh = new com.olivierld.AdafruitMotorHat (200);
+            com.olivierld.AdafruitMotorHat.AdafruitStepperMotor sm = mh.getStepper (0);
+            sm.setSpeed (60);
+            sm.step (200, com.olivierld.AdafruitMotorHat.ServoCommand.FORWARD, com.olivierld.AdafruitMotorHat.Style.SINGLE);
+            sm.step (200, com.olivierld.AdafruitMotorHat.ServoCommand.BACKWARD, com.olivierld.AdafruitMotorHat.Style.SINGLE);
+            sm.step (200, com.olivierld.AdafruitMotorHat.ServoCommand.FORWARD, com.olivierld.AdafruitMotorHat.Style.DOUBLE);
+            sm.step (200, com.olivierld.AdafruitMotorHat.ServoCommand.BACKWARD, com.olivierld.AdafruitMotorHat.Style.DOUBLE);
+            sm.step (200, com.olivierld.AdafruitMotorHat.ServoCommand.FORWARD, com.olivierld.AdafruitMotorHat.Style.MICROSTEP);
+            sm.step (200, com.olivierld.AdafruitMotorHat.ServoCommand.BACKWARD, com.olivierld.AdafruitMotorHat.Style.MICROSTEP);
+        } catch (Exception exc) {
+            log.error (exc);
+        }
+
         StepperMotor stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
         log.info ("Full step forward");
         stepper.turn (1.0, 5.0);
