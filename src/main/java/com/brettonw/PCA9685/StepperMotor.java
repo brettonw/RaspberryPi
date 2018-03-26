@@ -51,7 +51,7 @@ public class StepperMotor {
                 };
                 break;
             case SUB_STEP: {
-                steps = new StepValue[16 << subStepShift];
+                steps = new StepValue[8 << subStepShift];
                 double stepAngle = (Math.PI * 2.0) / steps.length;
                 for (int i = 0; i < steps.length; ++i) {
                     double step = stepAngle * i;
@@ -86,10 +86,15 @@ public class StepperMotor {
         return this;
     }
 
+    public StepperMotor turn (double revolutions) {
+        // do it as fast as possible
+        return turn (revolutions, -1);
+    }
+
     public StepperMotor turn (double revolutions, double time) {
         int stepCount = (int) Math.round (Math.abs (revolutions) * stepsPerRevolution);
         // time is in seconds
-        int millisecondsDelayPerStep = (int) Math.round ((1000 * time) / stepCount);
+        int millisecondsDelayPerStep = (int) Math.round ((1_000 * time) / stepCount);
         int direction = (revolutions >= 0) ? 1 : -1;
         log.debug (stepCount + " steps (direction: " + direction + ", delay: " + millisecondsDelayPerStep + ")");
         for (int i = 0; i < stepCount; ++i) {

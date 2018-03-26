@@ -8,10 +8,12 @@ public class Utility {
 
     // internal wait functions
     public final static void waitL (long milliseconds) {
-        try {
-            Thread.sleep (milliseconds);
-        } catch (InterruptedException exception) {
-            log.error (exception);
+        if (milliseconds >= 0) {
+            try {
+                Thread.sleep (milliseconds);
+            } catch (InterruptedException exception) {
+                log.error (exception);
+            }
         }
     }
 
