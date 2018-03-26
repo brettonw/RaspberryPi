@@ -72,7 +72,6 @@ public class AdafruitMotorHatTest {
 
         stepper.stop ();
 
-/*
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.HALF_STEP);
         log.info ("Half step forward");
         stepper.turn (1.0, 5.0);
@@ -100,9 +99,8 @@ public class AdafruitMotorHatTest {
         log.info ("Sub step backward");
         stepper.turn (-1.0, 5.0);
         stepper.stop ();
-*/
 
-/*
+
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP);
         log.info ("Sub step forward");
         startTime = System.currentTimeMillis ();
@@ -115,7 +113,6 @@ public class AdafruitMotorHatTest {
         endTime = System.currentTimeMillis ();
         log.info (String.format ("%.04f", ((endTime - startTime) / 1000.0)) + " seconds");
         stepper.stop ();
-*/
     }
 
 }
