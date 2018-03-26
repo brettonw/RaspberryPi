@@ -51,27 +51,26 @@ public class AdafruitMotorHatTest {
 
     @Test
     public void testStepper () {
-        double oneSecond = 1.0 / 60.0;
 
         StepperMotor stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
         log.info ("Full step forward");
-        stepper.turn (1.0, oneSecond);
+        stepper.turn (1.0, 5.0);
         log.info ("Full step backward");
-        stepper.turn (-1.0, oneSecond);
+        stepper.turn (-1.0, 5.0);
         stepper.stop ();
 
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.HALF_STEP);
         log.info ("Half step forward");
-        stepper.turn (1.0, oneSecond);
+        stepper.turn (1.0, 5.0);
         log.info ("Half Step backward");
-        stepper.turn (-1.0, oneSecond);
+        stepper.turn (-1.0, 5.0);
         stepper.stop ();
 
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP);
         log.info ("Sub step forward");
-        stepper.turn (1.0, oneSecond);
+        stepper.turn (1.0, 5.0);
         log.info ("Sub step backward");
-        stepper.turn (-1.0, oneSecond);
+        stepper.turn (-1.0, 5.0);
         stepper.stop ();
 
         /*

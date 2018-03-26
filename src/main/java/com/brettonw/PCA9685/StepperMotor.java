@@ -85,12 +85,10 @@ public class StepperMotor {
         return this;
     }
 
-    private static final long millisecondsPerMinute = 1000 * 60;
-
     public StepperMotor turn (double revolutions, double time) {
         int stepCount = (int) Math.round (Math.abs (revolutions) * stepsPerRevolution);
-        // time is in minutes (so RPM)
-        int millisecondsDelayPerStep = (int) Math.round ((millisecondsPerMinute * time) / stepCount);
+        // time is in seconds
+        int millisecondsDelayPerStep = (int) Math.round ((1000 * time) / stepCount);
         int direction = (revolutions >= 0) ? 1 : -1;
         log.debug (stepCount + " steps (direction: " + direction + ", delay: " + millisecondsDelayPerStep + ")");
         for (int i = 0; i < stepCount; ++i) {
