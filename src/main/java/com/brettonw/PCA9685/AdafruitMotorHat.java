@@ -1,26 +1,20 @@
 package com.brettonw.PCA9685;
 
-import com.brettonw.Utility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 // DC and Stepper Motor Hat
 // https://learn.adafruit.com/adafruit-dc-and-stepper-motor-hat-for-raspberry-pi/overview
-// this "hat" is a combination 9685 16 Channel Pulse Width Modulation Controller (PWM) for LEDs,
-// and 2 6612 H-bridge motor controllers driven off the modulated outputs
+// this "hat" is a combination 9685 16 Channel Pulse Width Modulation Controller (PWM) for
+// LEDs, and 2 6612 H-bridge motor controllers driven off the modulated outputs. the "hat"
+// supports four motors (a stepper motor is driven as if it were two motors)
 // https://cdn-shop.adafruit.com/datasheets/TB6612FNG_datasheet_en_20121101.pdf
 public class AdafruitMotorHat extends PCA9685 {
     protected static final Logger log = LogManager.getLogger (AdafruitMotorHat.class);
 
     public static final int DEFAULT_ADDRESS = 0x60;
-
-    public enum Motor {
-        MOTOR_1, MOTOR_2, MOTOR_3, MOTOR_4
-    }
 
     public AdafruitMotorHat () {
         this (DEFAULT_ADDRESS);
@@ -34,19 +28,19 @@ public class AdafruitMotorHat extends PCA9685 {
         setChannel (pin, high ? CHANNEL_HIGH : 0, high ? 0 : CHANNEL_HIGH);
     }
 
-    private void runMotor (int modulator, int forward, int backward, double speed) {
+    private void runMotor (int modulator, int frontPin, int backPin, double speed) {
         try {
             if (speed < 0.0) {
-                setPin (forward, false);
-                setPin (backward, true);
+                setPin (frontPin, false);
+                setPin (backPin, true);
                 setChannel (modulator, 0, (int) (-speed * CHANNEL_HIGH));
             } else if (speed > 0.0) {
-                setPin (forward, true);
-                setPin (backward, false);
+                setPin (frontPin, true);
+                setPin (backPin, false);
                 setChannel (modulator, 0, (int) (speed * CHANNEL_HIGH));
             } else if (speed == 0.0) {
-                setPin (forward, false);
-                setPin (backward, false);
+                setPin (frontPin, false);
+                setPin (backPin, false);
                 setChannel (modulator, 0, 0);
             }
         }
@@ -55,8 +49,8 @@ public class AdafruitMotorHat extends PCA9685 {
         }
     }
 
-    private void runMotorInternal (Motor motor, double speed) {
-        switch (motor) {
+    public void runMotor (MotorId motorId, double speed) {
+        switch (motorId) {
             case MOTOR_1: runMotor (8, 9, 10, speed); break;
             case MOTOR_2: runMotor (13, 12, 11, speed); break;
             case MOTOR_3: runMotor (2, 3, 4, speed); break;
@@ -64,19 +58,7 @@ public class AdafruitMotorHat extends PCA9685 {
         }
     }
 
-    public AdafruitMotorHat runMotor (Motor motor, double speed) {
-        // speed is just setting the PWM in the 12-bit range (0..1) = (stopped..full speed)
-        log.debug (motor.name () + "@" + String.format ("%.04f", speed));
-        runMotorInternal (motor, speed);
-        return this;
-    }
-
-    public AdafruitMotorHat stopMotor (Motor motor) {
-        log.debug (motor.name ());
-        runMotorInternal (motor, 0.0);
-        return this;
-    }
-
+    /*
     public enum Stepper {
         STEPPER_1, STEPPER_2
     }
@@ -109,9 +91,9 @@ public class AdafruitMotorHat extends PCA9685 {
         return null;
     }
 
-    private static final Map<Stepper, Motor[]> STEPPER_MOTOR_INDEX = new HashMap <Stepper, Motor[]> (2) {{
-        put (Stepper.STEPPER_1, new Motor[]{ Motor.MOTOR_1, Motor.MOTOR_2 });
-        put (Stepper.STEPPER_2, new Motor[]{ Motor.MOTOR_3, Motor.MOTOR_4 });
+    private static final Map<Stepper, MotorId[]> STEPPER_MOTOR_INDEX = new HashMap <Stepper, MotorId[]> (2) {{
+        put (Stepper.STEPPER_1, new MotorId[]{ MotorId.MOTOR_1, MotorId.MOTOR_2 });
+        put (Stepper.STEPPER_2, new MotorId[]{ MotorId.MOTOR_3, MotorId.MOTOR_4 });
 
     }};
 
@@ -159,14 +141,15 @@ public class AdafruitMotorHat extends PCA9685 {
     public AdafruitMotorHat stepMotorStop (Stepper stepper) {
         switch (stepper) {
             case STEPPER_1:
-                runMotorInternal (Motor.MOTOR_1, 0);
-                runMotorInternal (Motor.MOTOR_2, 0);
+                runMotorInternal (MotorId.MOTOR_1, 0);
+                runMotorInternal (MotorId.MOTOR_2, 0);
                 break;
             case STEPPER_2:
-                runMotorInternal (Motor.MOTOR_3, 0);
-                runMotorInternal (Motor.MOTOR_4, 0);
+                runMotorInternal (MotorId.MOTOR_3, 0);
+                runMotorInternal (MotorId.MOTOR_4, 0);
                 break;
         }
         return this;
     }
+    */
 }

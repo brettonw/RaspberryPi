@@ -1,6 +1,5 @@
 package com.brettonw.PCA9685;
 
-import com.brettonw.Utility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -15,27 +14,29 @@ public class AdafruitMotorHatTest {
         motorHat = new AdafruitMotorHat ();
     }
 
-    private void runMotor (AdafruitMotorHat.Motor motor) {
-        log.debug ("RUN (" + motor.name () + ")");
+    private void runMotor (MotorId motorId) {
+        /*
+        log.debug ("RUN (" + motorId.name () + ")");
         if (motorHat.hasDevice ()) {
             log.debug ("FORWARD");
             for (int i = 0; i <= 100; i ++) {
-                motorHat.runMotor (motor, i / 100.0);
+                motorHat.runMotor (motorId, i / 100.0);
                 Utility.waitL (1);
             }
             Utility.waitD (5);
-            motorHat.stopMotor (motor);
+            motorHat.stopMotor (motorId);
             Utility.waitD (1);
 
             log.debug ("REVERSE");
             for (int i = 0; i <= 100; i++) {
-                motorHat.runMotor (motor, i / 100.0);
+                motorHat.runMotor (motorId, i / 100.0);
                 Utility.waitL (1);
             }
             Utility.waitD (5);
-            motorHat.stopMotor (motor);
+            motorHat.stopMotor (motorId);
             Utility.waitD (1);
         }
+        */
     }
 
     @Test
@@ -50,15 +51,34 @@ public class AdafruitMotorHatTest {
 
     @Test
     public void testStepper () {
+        double oneSecond = 1.0 / 60.0;
+
+        StepperMotor stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
+        stepper.turn (1.0, oneSecond);
+        stepper.turn (-1.0, oneSecond);
+        stepper.stop ();
+
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.HALF_STEP);
+        stepper.turn (1.0, oneSecond);
+        stepper.turn (-1.0, oneSecond);
+        stepper.stop ();
+
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP);
+        stepper.turn (1.0, oneSecond);
+        stepper.turn (-1.0, oneSecond);
+        stepper.stop ();
+
+        /*
         AdafruitMotorHat.StepValue[] steps = AdafruitMotorHat.makeSteps (1);
         for (int i = 0; i < 100; ++i) {
-            motorHat.stepMotorWhole (AdafruitMotorHat.Stepper.STEPPER_1, steps, -1);
+            motorHat.stepMotorWhole (AdafruitMotorHat.Stepper.STEPPER_1, steps, 100);
         }
         motorHat.stepMotorStop (AdafruitMotorHat.Stepper.STEPPER_1);
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 1; ++i) {
             motorHat.stepMotorWhole (AdafruitMotorHat.Stepper.STEPPER_2, steps);
         }
         motorHat.stepMotorStop (AdafruitMotorHat.Stepper.STEPPER_2);
+        */
     }
 
 }
