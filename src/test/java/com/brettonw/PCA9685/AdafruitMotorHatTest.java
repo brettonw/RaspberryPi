@@ -59,22 +59,16 @@ public class AdafruitMotorHatTest {
         log.info ("Full step backward");
         //stepper.turn (-1.0, 200.0);
         Utility.waitD (1.0);
-        stepper.step (StepDirection.FORWARD);
-        Utility.waitL (1);
-        stepper.step (StepDirection.FORWARD);
-        Utility.waitL (1);
-        stepper.step (StepDirection.FORWARD);
-        Utility.waitL (1);
-        stepper.step (StepDirection.FORWARD);
+        for (int i = 0; i < 50; ++i) {
+            stepper.step (StepDirection.FORWARD);
+            Utility.waitL (5);
+        }
 
         Utility.waitD (1.0);
-        stepper.step (StepDirection.BACKWARD);
-        Utility.waitL (1);
-        stepper.step (StepDirection.BACKWARD);
-        Utility.waitL (1);
-        stepper.step (StepDirection.BACKWARD);
-        Utility.waitL (1);
-        stepper.step (StepDirection.BACKWARD);
+        for (int i = 0; i < 50; ++i) {
+            stepper.step (StepDirection.BACKWARD);
+            Utility.waitL (5);
+        }
 
         stepper.stop ();
 
