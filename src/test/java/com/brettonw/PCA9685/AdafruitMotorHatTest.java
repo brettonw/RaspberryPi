@@ -94,12 +94,12 @@ public class AdafruitMotorHatTest {
         startTime = System.currentTimeMillis ();
         stepper.turn (1.0);
         endTime = System.currentTimeMillis ();
-        log.info (String.format ("%.04f", ((endTime - startTime) / 1000.0) + " seconds");
+        log.info (String.format ("%.04f", ((endTime - startTime) / 1000.0)) + " seconds");
         log.info ("Sub step backward");
         startTime = System.currentTimeMillis ();
         stepper.turn (-1.0);
         endTime = System.currentTimeMillis ();
-        log.info (String.format ("%.04f", ((endTime - startTime) / 1000.0) + " seconds");
+        log.info (String.format ("%.04f", ((endTime - startTime) / 1000.0)) + " seconds");
         stepper.stop ();
     }
 
