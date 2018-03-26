@@ -55,7 +55,10 @@ public class AdafruitMotorHatTest {
     @Test
     public void testServo () {
         servoDriver.setPosition (0, 0);
-        Utility.waitD (1.0);
+        Utility.waitD (10.0);
+        servoDriver.setPosition (0, 1.0);
+        Utility.waitD (10.0);
+        /*
         for (int j = 0; j < 5; ++j) {
             for (int i = 0; i <= 100; ++i) {
                 servoDriver.setPosition (0, i / 100.0);
@@ -67,7 +70,7 @@ public class AdafruitMotorHatTest {
                 Utility.waitL (5);
             }
             Utility.waitD (1.0);
-        }
+        }*/
     }
 
     @Test
