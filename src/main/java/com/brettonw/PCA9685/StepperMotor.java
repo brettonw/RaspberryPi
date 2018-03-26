@@ -62,7 +62,11 @@ public class StepperMotor {
         }
         this.stepsPerRevolution = stepsPerRevolution * (steps.length / 4);
 
-        // energize the motors
+        energize ();
+    }
+
+    private void energize () {
+        log.trace ("A (" + String.format ("%.04f", steps[currentStepIndex].motor1) + "), B (" + String.format ("%.04f", steps[currentStepIndex].motor2) + ")");
         controller.runMotor (motorIdA, steps[currentStepIndex].motor1);
         controller.runMotor (motorIdB, steps[currentStepIndex].motor2);
     }
@@ -75,10 +79,7 @@ public class StepperMotor {
         }
         while (currentStepIndex < 0);
 
-        // now energize the motors
-        log.trace("A (" + String.format ("%.04f", steps[currentStepIndex].motor1) + "), B (" + String.format ("%.04f", steps[currentStepIndex].motor2) + ")");
-        controller.runMotor (motorIdA, steps[currentStepIndex].motor1);
-        controller.runMotor (motorIdB, steps[currentStepIndex].motor2);
+        energize ();
     }
 
     public StepperMotor step (StepDirection direction) {

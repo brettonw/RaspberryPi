@@ -55,23 +55,46 @@ public class AdafruitMotorHatTest {
         StepperMotor stepper;
         long startTime, endTime;
 
+        Utility.waitD (1.0);
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
+        log.info ("Full step forward");
+        //stepper.turn (-1.0, 200.0);
+        Utility.waitD (1.0);
+        for (int i = 0; i < 10; ++i) {
+            stepper.step (StepDirection.FORWARD);
+            Utility.waitD (1.0);
+        }
+        stepper.stop ();
+
         log.info ("Full step backward");
+        Utility.waitD (1.0);
+        for (int i = 0; i < 10; ++i) {
+            stepper.step (StepDirection.BACKWARD);
+            Utility.waitD (1.0);
+        }
+        stepper.stop ();
+
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
+        log.info ("Full step forward");
         //stepper.turn (-1.0, 200.0);
         Utility.waitD (1.0);
         for (int i = 0; i < 50; ++i) {
             stepper.step (StepDirection.FORWARD);
             Utility.waitL (5);
         }
+        stepper.stop ();
 
+        log.info ("Full step backward");
         Utility.waitD (1.0);
         for (int i = 0; i < 50; ++i) {
             stepper.step (StepDirection.BACKWARD);
             Utility.waitL (5);
         }
-
         stepper.stop ();
         Utility.waitD (1.0);
+
+
+
 
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.HALF_STEP);
         log.info ("Half step forward");
