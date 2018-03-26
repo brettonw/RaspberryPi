@@ -52,54 +52,40 @@ public class AdafruitMotorHatTest {
     @Test
     public void testStepper () {
 
-        if (false) {
-            StepperMotor stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
-            log.info ("Full step forward");
-            stepper.turn (1.0, 10.0);
-            log.info ("Full step backward");
-            stepper.turn (-1.0, 10.0);
-            stepper.stop ();
+        StepperMotor stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
+        log.info ("Full step forward");
+        stepper.turn (1.0, 10.0);
+        log.info ("Full step backward");
+        stepper.turn (-1.0, 10.0);
+        stepper.stop ();
 
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.HALF_STEP);
-            log.info ("Half step forward");
-            stepper.turn (1.0, 5.0);
-            log.info ("Half Step backward");
-            stepper.turn (-1.0, 5.0);
-            stepper.stop ();
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.HALF_STEP);
+        log.info ("Half step forward");
+        stepper.turn (1.0, 5.0);
+        log.info ("Half Step backward");
+        stepper.turn (-1.0, 5.0);
+        stepper.stop ();
 
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP);
-            log.info ("Sub step forward");
-            stepper.turn (1.0, 5.0);
-            log.info ("Sub step backward");
-            stepper.turn (-1.0, 5.0);
-            stepper.stop ();
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP);
+        log.info ("Sub step forward");
+        stepper.turn (1.0, 5.0);
+        log.info ("Sub step backward");
+        stepper.turn (-1.0, 5.0);
+        stepper.stop ();
 
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP, 1);
-            log.info ("Sub step forward");
-            stepper.turn (1.0, 5.0);
-            log.info ("Sub step backward");
-            stepper.turn (-1.0, 5.0);
-            stepper.stop ();
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP, 1);
+        log.info ("Sub step forward");
+        stepper.turn (1.0, 5.0);
+        log.info ("Sub step backward");
+        stepper.turn (-1.0, 5.0);
+        stepper.stop ();
 
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP, 2);
-            log.info ("Sub step forward");
-            stepper.turn (1.0, 5.0);
-            log.info ("Sub step backward");
-            stepper.turn (-1.0, 5.0);
-            stepper.stop ();
-        }
-
-        /*
-        AdafruitMotorHat.StepValue[] steps = AdafruitMotorHat.makeSteps (1);
-        for (int i = 0; i < 100; ++i) {
-            motorHat.stepMotorWhole (AdafruitMotorHat.Stepper.STEPPER_1, steps, 100);
-        }
-        motorHat.stepMotorStop (AdafruitMotorHat.Stepper.STEPPER_1);
-        for (int i = 0; i < 1; ++i) {
-            motorHat.stepMotorWhole (AdafruitMotorHat.Stepper.STEPPER_2, steps);
-        }
-        motorHat.stepMotorStop (AdafruitMotorHat.Stepper.STEPPER_2);
-        */
+        stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.SUB_STEP, 2);
+        log.info ("Sub step forward");
+        stepper.turn (1.0, 5.0);
+        log.info ("Sub step backward");
+        stepper.turn (-1.0, 5.0);
+        stepper.stop ();
     }
 
 }
