@@ -71,6 +71,7 @@ public class AdafruitMotorHatTest {
         }
 
         stepper.stop ();
+        Utility.waitD (1.0);
 
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.HALF_STEP);
         log.info ("Half step forward");
@@ -78,6 +79,7 @@ public class AdafruitMotorHatTest {
         log.info ("Half Step backward");
         stepper.turn (-1.0, 5.0);
         stepper.stop ();
+        Utility.waitD (1.0);
 
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP);
         log.info ("Sub step forward");
@@ -85,6 +87,7 @@ public class AdafruitMotorHatTest {
         log.info ("Sub step backward");
         stepper.turn (-1.0, 5.0);
         stepper.stop ();
+        Utility.waitD (1.0);
 
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP, 1);
         log.info ("Sub step forward");
@@ -92,6 +95,7 @@ public class AdafruitMotorHatTest {
         log.info ("Sub step backward");
         stepper.turn (-1.0, 5.0);
         stepper.stop ();
+        Utility.waitD (1.0);
 
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP, 2);
         log.info ("Sub step forward");
@@ -99,7 +103,7 @@ public class AdafruitMotorHatTest {
         log.info ("Sub step backward");
         stepper.turn (-1.0, 5.0);
         stepper.stop ();
-
+        Utility.waitD (1.0);
 
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP);
         log.info ("Sub step forward");
