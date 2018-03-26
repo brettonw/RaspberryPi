@@ -60,13 +60,13 @@ public class AdafruitMotorHatTest {
             for (int i = 0; i <= 100; ++i) {
                 log.debug (i + "");
                 servoDriver.setPosition (0, i / 100.0);
-                Utility.waitL (100);
+                Utility.waitL (10);
             }
             Utility.waitD (1.0);
             for (int i = 100; i >= 0; --i) {
                 log.debug (i + "");
                 servoDriver.setPosition (0, i / 100.0);
-                Utility.waitL (100);
+                Utility.waitL (10);
             }
             Utility.waitD (1.0);
         }
