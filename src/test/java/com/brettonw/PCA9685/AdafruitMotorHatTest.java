@@ -54,7 +54,7 @@ public class AdafruitMotorHatTest {
 
         try {
             com.olivierld.AdafruitMotorHat mh = new com.olivierld.AdafruitMotorHat (200);
-            com.olivierld.AdafruitMotorHat.AdafruitStepperMotor sm = mh.getStepper (0);
+            com.olivierld.AdafruitMotorHat.AdafruitStepperMotor sm = mh.getStepper (1);
             sm.setSpeed (60);
             sm.step (200, com.olivierld.AdafruitMotorHat.ServoCommand.FORWARD, com.olivierld.AdafruitMotorHat.Style.SINGLE);
             sm.step (200, com.olivierld.AdafruitMotorHat.ServoCommand.BACKWARD, com.olivierld.AdafruitMotorHat.Style.SINGLE);
