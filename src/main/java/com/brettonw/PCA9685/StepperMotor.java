@@ -76,6 +76,7 @@ public class StepperMotor {
         while (currentStepIndex < 0);
 
         // now energize the motors
+        log.debug("A (" + String.format ("%0.04f", steps[currentStepIndex].motor1) + "), B (" + String.format ("%0.04f", steps[currentStepIndex].motor2) + ")")
         controller.runMotor (motorIdA, steps[currentStepIndex].motor1);
         controller.runMotor (motorIdB, steps[currentStepIndex].motor2);
     }
