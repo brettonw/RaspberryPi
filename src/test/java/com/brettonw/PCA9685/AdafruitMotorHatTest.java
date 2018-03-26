@@ -52,6 +52,7 @@ public class AdafruitMotorHatTest {
     @Test
     public void testStepper () {
         StepperMotor stepper;
+        long startTime, endTime;
 /*
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
         log.info ("Full step forward");
@@ -90,9 +91,15 @@ public class AdafruitMotorHatTest {
 */
         stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP, 1);
         log.info ("Sub step forward");
+        startTime = System.currentTimeMillis ();
         stepper.turn (1.0);
+        endTime = System.currentTimeMillis ();
+        log.info (String.format ("%.04f", ((endTime - startTime) / 1000.0) + " seconds");
         log.info ("Sub step backward");
+        startTime = System.currentTimeMillis ();
         stepper.turn (-1.0);
+        endTime = System.currentTimeMillis ();
+        log.info (String.format ("%.04f", ((endTime - startTime) / 1000.0) + " seconds");
         stepper.stop ();
     }
 
