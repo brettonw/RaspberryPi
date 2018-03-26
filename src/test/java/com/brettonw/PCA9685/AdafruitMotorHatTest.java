@@ -60,42 +60,16 @@ public class AdafruitMotorHatTest {
         //stepper.turn (-1.0, 200.0);
         Utility.waitD (1.0);
         stepper.step (StepDirection.BACKWARD);
-        stepper.stop ();
+        stepper.step (StepDirection.BACKWARD);
+        stepper.step (StepDirection.BACKWARD);
+        stepper.step (StepDirection.BACKWARD);
 
         Utility.waitD (1.0);
         stepper.step (StepDirection.BACKWARD);
-        stepper.stop ();
-
-        Utility.waitD (1.0);
         stepper.step (StepDirection.BACKWARD);
-        stepper.stop ();
-
-        Utility.waitD (1.0);
         stepper.step (StepDirection.BACKWARD);
-        stepper.stop ();
-
-        Utility.waitD (1.0);
         stepper.step (StepDirection.BACKWARD);
-        stepper.stop ();
 
-        Utility.waitD (1.0);
-        stepper.step (StepDirection.BACKWARD);
-        stepper.stop ();
-
-        Utility.waitD (1.0);
-        stepper.step (StepDirection.BACKWARD);
-        stepper.stop ();
-
-        Utility.waitD (1.0);
-        stepper.step (StepDirection.BACKWARD);
-        stepper.stop ();
-
-        Utility.waitD (1.0);
-        stepper.step (StepDirection.BACKWARD);
-        stepper.stop ();
-
-        Utility.waitD (1.0);
-        stepper.step (StepDirection.BACKWARD);
         stepper.stop ();
 
 /*
