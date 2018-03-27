@@ -34,6 +34,7 @@ public class PCA9685 {
 
     // the pulse width modulators (PWM) have 12-bit resolution
     protected static final int CHANNEL_HIGH = 0x0FFF; // 4095
+    protected static final int CHANNEL_FORCE = 0x1000; // 4096
 
     // bits (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - mode 1, table 5)
     protected final static int RESTART = 0x80;
@@ -90,22 +91,22 @@ public class PCA9685 {
      * pulse frequency).
      *
      * @param channel - which channel of the PCM will be updated
-     * @param on      - when to turn the pulse on within the tick, out of 4096
-     * @param off     - when to turn the pulse off within the tick, out of 4096, off must be greater than on
+     * @param on      - when to turn the pulse on within the tick, out of 4096, control
+     *                bit 4 (value 4096) will force the output on for the whole cycle
+     * @param off     - when to turn the pulse off within the tick, out of 4096, off
+     *                should be greater than on, but control bit 4 (value 4096) will force
+     *                the output off for the whole
      * @throws IOException
      */
     protected void setChannelPulse (int channel, int on, int off) {
+        // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.3)
         try {
-            if (off >= on) {
-                log.trace (channel + " - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
-                int channelOffset = channel * CHANNEL_OFFSET_MULTIPLIER;
-                i2cDevice.write (CHANNEL_BASE_ON_L + channelOffset, (byte) (on & 0xFF));
-                i2cDevice.write (CHANNEL_BASE_ON_H + channelOffset, (byte) (on >> 8));
-                i2cDevice.write (CHANNEL_BASE_OFF_L + channelOffset, (byte) (off & 0xFF));
-                i2cDevice.write (CHANNEL_BASE_OFF_H + channelOffset, (byte) (off >> 8));
-            } else {
-                log.error ("Invalid pulse parameters - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
-            }
+            log.trace (channel + " - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
+            int channelOffset = channel * CHANNEL_OFFSET_MULTIPLIER;
+            i2cDevice.write (CHANNEL_BASE_ON_L + channelOffset, (byte) (on & 0xFF));
+            i2cDevice.write (CHANNEL_BASE_ON_H + channelOffset, (byte) (on >> 8));
+            i2cDevice.write (CHANNEL_BASE_OFF_L + channelOffset, (byte) (off & 0xFF));
+            i2cDevice.write (CHANNEL_BASE_OFF_H + channelOffset, (byte) (off >> 8));
         } catch (IOException exception) {
             log.error (exception);
         }
@@ -121,6 +122,14 @@ public class PCA9685 {
      */
     protected void setChannelPulse (int channel, int width) {
         setChannelPulse (channel, 0, width);
+    }
+
+    protected void setChannelOn (int channel) {
+        setChannelPulse (CHANNEL_FORCE, 0);
+    }
+
+    protected void setChannelOff (int channel) {
+        setChannelPulse (0, CHANNEL_FORCE);
     }
 
     // values used for setting the pulse frequency, the default is 1ms per cycle

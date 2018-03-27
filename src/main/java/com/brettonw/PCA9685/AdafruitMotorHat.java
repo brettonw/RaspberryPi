@@ -25,17 +25,17 @@ public class AdafruitMotorHat extends PCA9685 {
     private void runMotor (int modulator, int frontPin, int backPin, double speed) {
         try {
             if (speed < 0.0) {
-                setChannelPulse (frontPin, 0);
-                setChannelPulse (backPin, CHANNEL_HIGH);
+                setChannelOff (frontPin);
+                setChannelOn (backPin);
                 setChannelPulse (modulator, (int) (-speed * CHANNEL_HIGH));
             } else if (speed > 0.0) {
-                setChannelPulse (frontPin, CHANNEL_HIGH);
-                setChannelPulse (backPin, 0);
+                setChannelOn (frontPin);
+                setChannelOff (backPin);
                 setChannelPulse (modulator, (int) (speed * CHANNEL_HIGH));
             } else if (speed == 0.0) {
-                setChannelPulse (frontPin, 0);
-                setChannelPulse (backPin, 0);
-                setChannelPulse (modulator, 0);
+                setChannelOff (frontPin);
+                setChannelOff (backPin);
+                setChannelOff (modulator);
             }
         }
         catch (Exception exception) {
