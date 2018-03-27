@@ -121,7 +121,17 @@ public class PCA9685 {
      * @throws IOException
      */
     protected void setChannelPulse (int channel, int width) {
-        setChannelPulse (channel, 0, width);
+        switch (width) {
+            case 0:
+                setChannelOff (channel);
+                break;
+            case CHANNEL_HIGH:
+                setChannelOn (channel);
+                break;
+            default:
+                setChannelPulse (channel, 0, width);
+                break;
+        }
     }
 
     protected void setChannelOn (int channel) {
