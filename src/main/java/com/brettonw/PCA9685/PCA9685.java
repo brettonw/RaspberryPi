@@ -123,10 +123,10 @@ public class PCA9685 {
     protected void setChannelPulse (int channel, int width) {
         switch (width) {
             case 0:
-                setChannelOff (channel);
+                setChannelPulse (channel, 0, CHANNEL_FORCE);
                 break;
             case CHANNEL_HIGH:
-                setChannelOn (channel);
+                setChannelPulse (channel, CHANNEL_FORCE, 0);
                 break;
             default:
                 setChannelPulse (channel, 0, width);
