@@ -101,11 +101,11 @@ public class PCA9685 {
     protected void setChannelPulse (int channel, int on, int off) {
         // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.3)
         try {
-            log.trace (channel + " - ON:" + String.format ("0x%04x", on) + ", OFF:" + String.format ("0x%04x", off));
+            log.trace (channel + " - ON:" + String.format ("0x%05x", on) + ", OFF:" + String.format ("0x%05x", off));
             int channelOffset = channel * CHANNEL_OFFSET_MULTIPLIER;
-            i2cDevice.write (CHANNEL_BASE_ON_L + channelOffset, (byte) (on & 0xFF));
+            i2cDevice.write (CHANNEL_BASE_ON_L + channelOffset, (byte) (on & 0x00FF));
             i2cDevice.write (CHANNEL_BASE_ON_H + channelOffset, (byte) (on >> 8));
-            i2cDevice.write (CHANNEL_BASE_OFF_L + channelOffset, (byte) (off & 0xFF));
+            i2cDevice.write (CHANNEL_BASE_OFF_L + channelOffset, (byte) (off & 0x00FF));
             i2cDevice.write (CHANNEL_BASE_OFF_H + channelOffset, (byte) (off >> 8));
         } catch (IOException exception) {
             log.error (exception);
@@ -125,11 +125,11 @@ public class PCA9685 {
     }
 
     protected void setChannelOn (int channel) {
-        setChannelPulse (CHANNEL_FORCE, 0);
+        setChannelPulse (channel, CHANNEL_FORCE, 0);
     }
 
     protected void setChannelOff (int channel) {
-        setChannelPulse (0, CHANNEL_FORCE);
+        setChannelPulse (channel, 0, CHANNEL_FORCE);
     }
 
     // values used for setting the pulse frequency, the default is 1ms per cycle
