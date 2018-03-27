@@ -54,28 +54,29 @@ public class AdafruitMotorHatTest {
 
     @Test
     public void testServo () {
-        servoDriver.setPosition (0, 0);
-        Utility.waitD (3.0);
-        for (int j = 0; j < 5; ++j) {
-            for (int i = 0; i <= 100; ++i) {
-                log.debug (i + "");
-                servoDriver.setPosition (0, i / 100.0);
-                Utility.waitL (10);
+        if (false) {
+            //servoDriver.setPosition (0, 0);
+            Utility.waitD (3.0);
+            for (int j = 0; j < 5; ++j) {
+                for (int i = 0; i <= 100; ++i) {
+                    log.debug (i + "");
+                    servoDriver.setPosition (0, i / 100.0);
+                    Utility.waitL (10);
+                }
+                Utility.waitD (1.0);
+                for (int i = 100; i >= 0; --i) {
+                    log.debug (i + "");
+                    servoDriver.setPosition (0, i / 100.0);
+                    Utility.waitL (10);
+                }
+                Utility.waitD (1.0);
             }
-            Utility.waitD (1.0);
-            for (int i = 100; i >= 0; --i) {
-                log.debug (i + "");
-                servoDriver.setPosition (0, i / 100.0);
-                Utility.waitL (10);
-            }
-            Utility.waitD (1.0);
         }
-
     }
 
     @Test
     public void testStepper () {
-        if (false) {
+        if (true) {
             StepperMotor stepper;
             long startTime, endTime;
 
