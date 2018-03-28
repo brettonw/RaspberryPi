@@ -32,10 +32,10 @@ public class StepperMotor {
         switch (stepType) {
             case FULL_STEP:
                 steps = new StepValue[] {
-                    new StepValue (1, 0),
-                    new StepValue (0, 1),
-                    new StepValue (-1, 0),
-                    new StepValue (0, -1)
+                    new StepValue (1, 1),
+                    new StepValue (-1, 1),
+                    new StepValue (-1, -1),
+                    new StepValue (1, -1)
                 };
                 break;
             case HALF_STEP:
