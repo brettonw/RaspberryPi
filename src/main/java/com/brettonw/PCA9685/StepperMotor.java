@@ -145,6 +145,6 @@ public class StepperMotor {
     }
 
     public String getStepperType () {
-        return stepperType;
+        return stepperType + "-" + steps.length;
     }
 }
