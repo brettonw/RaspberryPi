@@ -74,105 +74,34 @@ public class AdafruitMotorHatTest {
         }
     }
 
+    private void backAndForth (StepType stepType) {
+        long startTime = System.currentTimeMillis ();
+        StepperMotor stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, stepType);
+
+        log.info (stepType.name () + " - forward");
+        stepper.turn (1.0, 5.0);
+        stepper.stop ();
+        Utility.waitD (1.0);
+
+        log.info (stepType.name () + " - backward");
+        stepper.turn (-1.0, 5.0);
+        stepper.stop ();
+        Utility.waitD (1.0);
+
+        log.info (String.format ("%.04f", ((System.currentTimeMillis () - startTime) / 1000.0)) + " seconds");
+    }
+
     @Test
     public void testStepper () {
-        if (true) {
-            StepperMotor stepper;
-            long startTime, endTime;
-
-            Utility.waitD (1.0);
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
-            log.info ("Full step forward");
-            //stepper.turn (-1.0, 200.0);
-            Utility.waitD (1.0);
-            for (int i = 0; i < 10; ++i) {
-                stepper.step (StepDirection.FORWARD);
-                Utility.waitD (1.0);
-            }
-            stepper.stop ();
-
-            log.info ("Full step backward");
-            Utility.waitD (1.0);
-            for (int i = 0; i < 10; ++i) {
-                stepper.step (StepDirection.BACKWARD);
-                Utility.waitD (1.0);
-            }
-            stepper.stop ();
-
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
-            log.info ("Full step forward");
-            //stepper.turn (-1.0, 200.0);
-            Utility.waitD (1.0);
-            for (int i = 0; i < 50; ++i) {
-                stepper.step (StepDirection.FORWARD);
-                Utility.waitL (5);
-            }
-            stepper.stop ();
-
-            log.info ("Full step backward");
-            Utility.waitD (1.0);
-            for (int i = 0; i < 50; ++i) {
-                stepper.step (StepDirection.BACKWARD);
-                Utility.waitL (5);
-            }
-            stepper.stop ();
-            Utility.waitD (1.0);
-
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.HALF_STEP);
-            log.info ("Half step forward");
-            stepper.turn (1.0, 5.0);
-            stepper.stop ();
-            Utility.waitD (1.0);
-            log.info ("Half Step backward");
-            stepper.turn (-1.0, 5.0);
-            stepper.stop ();
-            Utility.waitD (1.0);
-
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP);
-            log.info ("Sub step forward");
-            stepper.turn (1.0, 5.0);
-            stepper.stop ();
-            Utility.waitD (1.0);
-            log.info ("Sub step backward");
-            stepper.turn (-1.0, 5.0);
-            stepper.stop ();
-            Utility.waitD (1.0);
-
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP, 1);
-            log.info ("Sub step forward");
-            stepper.turn (1.0, 5.0);
-            stepper.stop ();
-            Utility.waitD (1.0);
-            log.info ("Sub step backward");
-            stepper.turn (-1.0, 5.0);
-            stepper.stop ();
-            Utility.waitD (1.0);
-
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, StepType.MICRO_STEP, 2);
-            log.info ("Sub step forward");
-            stepper.turn (1.0, 5.0);
-            stepper.stop ();
-            Utility.waitD (1.0);
-            log.info ("Sub step backward");
-            stepper.turn (-1.0, 5.0);
-            stepper.stop ();
-            Utility.waitD (1.0);
-
-            stepper = new StepperMotor (200, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2);
-            log.info ("Sub step forward");
-            startTime = System.currentTimeMillis ();
-            stepper.turn (1.0);
-            stepper.stop ();
-            Utility.waitD (1.0);
-            endTime = System.currentTimeMillis ();
-            log.info (String.format ("%.04f", ((endTime - startTime) / 1000.0)) + " seconds");
-            log.info ("Sub step backward");
-            startTime = System.currentTimeMillis ();
-            stepper.turn (-1.0);
-            endTime = System.currentTimeMillis ();
-            log.info (String.format ("%.04f", ((endTime - startTime) / 1000.0)) + " seconds");
-            stepper.stop ();
-        }
+        backAndForth (StepType.FULL_STEP_DOUBLE_COIL);
+        backAndForth (StepType.HALF_STEP);
+        backAndForth (StepType.MICRO_STEP_8);
+        backAndForth (StepType.MICRO_STEP_16);
+        backAndForth (StepType.MICRO_STEP_32);
+        backAndForth (StepType.WAVE_STEP_6);
+        backAndForth (StepType.WAVE_STEP_11);
+        backAndForth (StepType.WAVE_STEP_20);
+        backAndForth (StepType.FULL_STEP_SINGLE_COIL);
     }
 
 }
