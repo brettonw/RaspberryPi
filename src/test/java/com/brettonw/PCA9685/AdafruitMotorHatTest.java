@@ -77,12 +77,12 @@ public class AdafruitMotorHatTest {
     private void backAndForth (StepperMotor stepper) {
         long startTime = System.currentTimeMillis ();
 
-        log.info (stepper.getStepperType () + " - forward");
+        log.info (stepper.getDescription () + " - forward");
         stepper.turn (0.5);
         stepper.stop ();
         Utility.waitD (0.5);
 
-        log.info (stepper.getStepperType () + " - backward");
+        log.info (stepper.getDescription () + " - backward");
         stepper.turn (-0.5);
         stepper.stop ();
         Utility.waitD (0.5);
@@ -101,7 +101,7 @@ public class AdafruitMotorHatTest {
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 12));
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 16));
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 20));
-        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 28));
+        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 24));
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 32));
     }
 

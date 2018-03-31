@@ -20,12 +20,13 @@ public class StepperMotor {
 
     public static final int MINIMUM_CYCLE_DELAY = 2;
 
-    private String stepperType;
-    private int stepsPerRevolution;
-    private AdafruitMotorHat controller;
-    private MotorId motorIdA;
-    private MotorId motorIdB;
-    private CycleValue cycle[];
+    private final String stepperType;
+    private final double stepAngle;
+    private final int stepsPerRevolution;
+    private final AdafruitMotorHat controller;
+    private final MotorId motorIdA;
+    private final MotorId motorIdB;
+    private final CycleValue cycle[];
     private int current;
     private int minimumCycleDelay;
 
@@ -77,6 +78,7 @@ public class StepperMotor {
 
     private StepperMotor (String stepperType, double stepAngle, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, int cycleLength, double startAngle, boolean saturate) {
         this.stepperType = stepperType;
+        this.stepAngle = stepAngle;
         stepsPerRevolution = (int) Math.round (360.0 / stepAngle);
         this.controller = controller;
         this.motorIdA = motorIdA;
@@ -93,7 +95,7 @@ public class StepperMotor {
             cycle[i] = new CycleValue (Math.cos (angle), Math.sin (angle), saturate);
         }
 
-        log.info (getStepperType () + ", with " + stepsPerRevolution + " steps per revolution");
+        log.info (getDescription () + ", with " + stepsPerRevolution + " steps per revolution");
 
         // and now... energize the coils at the start of the cycle
         step (0);
@@ -142,8 +144,8 @@ public class StepperMotor {
         return this;
     }
 
-    public String getStepperType () {
-        return stepperType + "-step, cycle-length (per 4 steps): " + cycle.length;
+    public String getDescription () {
+        return stepperType + "-step, cycle-length (per 4 steps): " + cycle.length + ", resolution: " + String.format ("%.04f", (stepAngle * 4) / cycle.length) + " degrees/step";
     }
 
     public StepperMotor setMinimumCycleDelay (int minimumCycleDelay) {
