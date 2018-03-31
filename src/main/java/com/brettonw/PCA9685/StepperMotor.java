@@ -15,54 +15,77 @@ public class StepperMotor {
     private int currentStepIndex;
 
     public StepperMotor (int stepsPerRevolution, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB) {
-        this (stepsPerRevolution, controller, motorIdA, motorIdB, StepType.FULL_STEP);
+        this (stepsPerRevolution, controller, motorIdA, motorIdB, StepType.FULL_STEP_DOUBLE);
     }
 
     public StepperMotor (int stepsPerRevolution, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, StepType stepType) {
         this (stepsPerRevolution, controller, motorIdA, motorIdB, stepType, 0);
     }
 
-    public StepperMotor (int stepsPerRevolution, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, StepType stepType, int subStepShift) {
+    public StepperMotor (int stepsPerRevolution, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, StepType stepType, int stepParameter) {
         this.controller = controller;
         this.motorIdA = motorIdA;
         this.motorIdB = motorIdB;
         currentStepIndex = 0;
 
-        // build the steps table
+        // build the steps table - basically it is a representation of a list of 2d coordinates
+        // taken to be positions on the unit circle, and traversed in angle order
         switch (stepType) {
-            case FULL_STEP:
-                steps = new StepValue[] {
-                    new StepValue (1, 1),
-                    new StepValue (-1, 1),
-                    new StepValue (-1, -1),
-                    new StepValue (1, -1)
-                };
+            case FULL_STEP_SINGLE:
+                // the most basic list of 2D coordinates starts at 0 degrees and proceeds at 90
+                // degree intervals in 4 steps. i find this method to be unreliable, often missing
+                // steps, so I don't suggest using it, but it is provided for completeness
+                steps = saturate (makeSteps (0, 4));
+                break;
+            case FULL_STEP_DOUBLE:
+                // the next most basic case starts at 45 degrees, and proceeds in 4, 90 degrees
+                // steps. this is more reliable, and more powerful, as both motors are always
+                // energized.
+                steps = saturate (makeSteps (Math.PI / 4.0, 4));
                 break;
             case HALF_STEP:
-                steps = new StepValue[]{
-                    new StepValue (1, 0),
-                    new StepValue (1, 1),
-                    new StepValue (0, 1),
-                    new StepValue (-1, 1),
-                    new StepValue (-1, 0),
-                    new StepValue (-1, -1),
-                    new StepValue (0, -1),
-                    new StepValue (1, -1)
-                };
+                // half step starts at the 45 degree angle and proceeds in 8 45 degree steps. this
+                // is smoother than the full steps, but has varied torque across the steps
+                steps = saturate (makeSteps (Math.PI / 4.0, 8));
                 break;
             case MICRO_STEP: {
-                steps = new StepValue[8 << subStepShift];
+                // start at 45 degrees, so both coils are fully energized to start
+                // stepParameter is a bit shift value expected to be in the range 0..4
+                steps = new StepValue[8 << stepParameter];
                 double stepAngle = (Math.PI * 2.0) / steps.length;
+                double startAngle = Math.PI / 4.0;
                 for (int i = 0; i < steps.length; ++i) {
-                    double step = stepAngle * i;
+                    double step = startAngle + (stepAngle * i);
                     steps[i] = new StepValue (Math.cos (step), Math.sin (step));
                 }
+            }
+                break;
+            case WAVE_STEP: {
+                //
             }
                 break;
         }
         this.stepsPerRevolution = stepsPerRevolution * (steps.length / 4);
 
         energize ();
+    }
+
+    private static StepValue[] makeSteps (double startAngle, int stepCount) {
+        StepValue steps[] = new StepValue[stepCount];
+        double stepAngle = (Math.PI * 2.0) / stepCount;
+        for (int i = 0; i < stepCount; ++i) {
+            double step = startAngle + (stepAngle * i);
+            steps[i] = new StepValue (Math.cos (step), Math.sin (step));
+        }
+        return steps;
+    }
+
+    private static StepValue[] saturate (StepValue steps[]) {
+        for (StepValue stepValue : steps) {
+            stepValue.motor1 = (Math.abs (stepValue.motor1) > 0.5) ? Math.signum (stepValue.motor1) : 0;
+            stepValue.motor2 = (Math.abs (stepValue.motor2) > 0.5) ? Math.signum (stepValue.motor2) : 0;
+        }
+        return steps;
     }
 
     private void energize () {
