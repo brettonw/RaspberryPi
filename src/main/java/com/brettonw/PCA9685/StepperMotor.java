@@ -18,6 +18,8 @@ import org.apache.logging.log4j.Logger;
 public class StepperMotor {
     protected static final Logger log = LogManager.getLogger (Motor.class);
 
+    public static final int MINIMUM_CYCLE_DELAY = 2;
+
     private String stepperType;
     private int stepsPerRevolution;
     private AdafruitMotorHat controller;
@@ -25,6 +27,7 @@ public class StepperMotor {
     private MotorId motorIdB;
     private CycleValue cycle[];
     private int current;
+    private int minimumCycleDelay;
 
     /**
      * the most basic stepper traverses the unit circle, starting at 0 degrees and proceeds at 90
@@ -79,6 +82,7 @@ public class StepperMotor {
         this.motorIdA = motorIdA;
         this.motorIdB = motorIdB;
         current = 0;
+        minimumCycleDelay = MINIMUM_CYCLE_DELAY;
 
         // build the cycle table - basically it is a representation of a list of 2d coordinates
         // taken to be positions on the unit circle, and traversed in angle order
@@ -122,7 +126,7 @@ public class StepperMotor {
         int stepCount = (int) Math.round (Math.abs (revolutions) * (((cycle.length * stepsPerRevolution) / 4) + 1));
 
         // time is in seconds
-        int millisecondsDelayPerStep = Math.max((int) Math.round ((1_000.0 * time) / stepCount), 1);
+        int millisecondsDelayPerStep = Math.max((int) Math.round ((1_000.0 * time) / stepCount), minimumCycleDelay);
         int direction = (int) Math.signum (revolutions);
         log.info (stepCount + " steps (direction: " + direction + ", delay: " + millisecondsDelayPerStep + ")");
         for (int i = 0; i < stepCount; ++i) {
@@ -140,5 +144,10 @@ public class StepperMotor {
 
     public String getStepperType () {
         return stepperType + "-step, cycle-length (per 4 steps): " + cycle.length;
+    }
+
+    public StepperMotor setMinimumCycleDelay (int minimumCycleDelay) {
+        this.minimumCycleDelay = minimumCycleDelay;
+        return this;
     }
 }

@@ -94,12 +94,15 @@ public class AdafruitMotorHatTest {
     public void testStepper () {
         backAndForth (StepperMotor.getFullStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2));
         backAndForth (StepperMotor.getHalfStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2));
+        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 5));
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 6));
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 8));
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 10));
+        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 12));
+        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 16));
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 20));
-        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 30));
-        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 5));
+        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 28));
+        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 32));
     }
 
 }
