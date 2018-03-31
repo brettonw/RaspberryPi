@@ -99,6 +99,7 @@ public class AdafruitMotorHatTest {
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 10));
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 20));
         backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 30));
+        backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 5));
     }
 
 }
