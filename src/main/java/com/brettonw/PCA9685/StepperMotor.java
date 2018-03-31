@@ -63,19 +63,19 @@ public class StepperMotor {
                 // doing non-quadrant-symmetric walks around the unit circle, a compromise between
                 // the smoother operation that comes with more steps and the slow speed that also
                 // comes with more steps.
-                steps = makeSteps (0, 7);
+                steps = makeSteps (0, 6);
                 break;
             case WAVE_STEP_11:
                 // doing non-quadrant-symmetric walks around the unit circle, a compromise between
                 // the smoother operation that comes with more steps and the slow speed that also
                 // comes with more steps.
-                steps = makeSteps (0, 15);
+                steps = makeSteps (0, 11);
                 break;
             case WAVE_STEP_20:
                 // doing non-quadrant-symmetric walks around the unit circle, a compromise between
                 // the smoother operation that comes with more steps and the slow speed that also
                 // comes with more steps.
-                steps = makeSteps (0, 27);
+                steps = makeSteps (0, 20);
                 break;
         }
 
@@ -113,7 +113,7 @@ public class StepperMotor {
         // add the direction for the step, and ensure the new index is in the valid region
         currentStepIndex += direction;
         do {
-            currentStepIndex = (currentStepIndex + steps.length) & (steps.length - 1);
+            currentStepIndex = (currentStepIndex + steps.length) % steps.length;
         }
         while (currentStepIndex < 0);
         log.debug ("currentStepIndex: " + currentStepIndex);
