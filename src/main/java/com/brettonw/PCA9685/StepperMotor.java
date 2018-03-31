@@ -80,8 +80,6 @@ public class StepperMotor {
         this.motorIdB = motorIdB;
         current = 0;
 
-        log.info (getStepperType () + ", with " + stepsPerRevolution + " steps per revolution");
-
         // build the cycle table - basically it is a representation of a list of 2d coordinates
         // taken to be positions on the unit circle, and traversed in angle order
         cycle = new CycleValue[cycleLength];
@@ -90,6 +88,8 @@ public class StepperMotor {
             double angle = startAngle + (cycleAngle * i);
             cycle[i] = new CycleValue (Math.cos (angle), Math.sin (angle), saturate);
         }
+
+        log.info (getStepperType () + ", with " + stepsPerRevolution + " steps per revolution");
 
         // and now... energize the coils at the start of the cycle
         step (0);
@@ -122,7 +122,7 @@ public class StepperMotor {
         int stepCount = (int) Math.round (Math.abs (revolutions) * (((cycle.length * stepsPerRevolution) / 4) + 1));
 
         // time is in seconds
-        int millisecondsDelayPerStep = (int) Math.round ((1_000.0 * time) / stepCount);
+        int millisecondsDelayPerStep = Math.max((int) Math.round ((1_000.0 * time) / stepCount), 1);
         int direction = (int) Math.signum (revolutions);
         log.info (stepCount + " steps (direction: " + direction + ", delay: " + millisecondsDelayPerStep + ")");
         for (int i = 0; i < stepCount; ++i) {
