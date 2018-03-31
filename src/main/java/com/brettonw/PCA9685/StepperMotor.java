@@ -63,16 +63,34 @@ public class StepperMotor {
     /**
      * a micro-stepper starts at 0 degrees and proceeds around the unit circle at sample points
      * according to the stepCount.
-     * @param stepAngle - the degrees per step from the motor specification
-     * @param controller - the Adafruit motor controller, two motors are used to drive the stepper
-     * @param motorIdA - the first of the two motors, or "coils"
-     * @param motorIdB - the second of the two motors, or "coils"
+     *
+     * @param stepAngle   - the degrees per step from the motor specification
+     * @param controller  - the Adafruit motor controller, two motors are used to drive the stepper
+     * @param motorIdA    - the first of the two motors, or "coils"
+     * @param motorIdB    - the second of the two motors, or "coils"
      * @param cycleLength - the number of internal steps per cycle. at higher counts, this can drive
-     *                  the motor very precisely and smoothly, but the tradeoff is speed. useful
-     *                  numbers start at 5 and go up.
+     *                    the motor very precisely and smoothly, but the tradeoff is speed. useful
+     *                    numbers start at 5 and go up.
      * @return
      */
     public static StepperMotor getMicroStepper (double stepAngle, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, int cycleLength) {
+        return new StepperMotor ("micro", stepAngle, controller, motorIdA, motorIdB, cycleLength, 0, false);
+    }
+
+    /**
+     * a micro-stepper starts at 0 degrees and proceeds around the unit circle at sample points
+     * according to the desired angular resolution.
+     *
+     * @param stepAngle   - the degrees per step from the motor specification
+     * @param controller  - the Adafruit motor controller, two motors are used to drive the stepper
+     * @param motorIdA    - the first of the two motors, or "coils"
+     * @param motorIdB    - the second of the two motors, or "coils"
+     * @param resolution - the desired accuracy of the motor.
+     * @return
+     */
+    public static StepperMotor getMicroStepper (double stepAngle, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, double resolution) {
+        double cycleAngle = stepAngle * 4.0;
+        int cycleLength = (int) Math.round (cycleAngle / resolution);
         return new StepperMotor ("micro", stepAngle, controller, motorIdA, motorIdB, cycleLength, 0, false);
     }
 
