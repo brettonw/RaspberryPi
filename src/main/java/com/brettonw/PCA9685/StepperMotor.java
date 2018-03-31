@@ -63,19 +63,19 @@ public class StepperMotor {
                 // doing non-quadrant-symmetric walks around the unit circle, a compromise between
                 // the smoother operation that comes with more steps and the slow speed that also
                 // comes with more steps.
-                steps = makeSteps (0, 6);
+                steps = makeSteps (0, 7);
                 break;
             case WAVE_STEP_11:
                 // doing non-quadrant-symmetric walks around the unit circle, a compromise between
                 // the smoother operation that comes with more steps and the slow speed that also
                 // comes with more steps.
-                steps = makeSteps (0, 11);
+                steps = makeSteps (0, 15);
                 break;
             case WAVE_STEP_20:
                 // doing non-quadrant-symmetric walks around the unit circle, a compromise between
                 // the smoother operation that comes with more steps and the slow speed that also
                 // comes with more steps.
-                steps = makeSteps (0, 20);
+                steps = makeSteps (0, 27);
                 break;
         }
 
@@ -116,6 +116,7 @@ public class StepperMotor {
             currentStepIndex = (currentStepIndex + steps.length) & (steps.length - 1);
         }
         while (currentStepIndex < 0);
+        log.debug ("currentStepIndex: " + currentStepIndex);
 
         energize ();
     }
@@ -134,7 +135,7 @@ public class StepperMotor {
         int stepCount = (int) Math.round (Math.abs (revolutions) * (stepsPerRevolution + 1));
         // time is in seconds
         int millisecondsDelayPerStep = (int) Math.round ((1_000 * time) / stepCount);
-        int direction = (revolutions >= 0) ? 1 : -1;
+        int direction = (int) Math.signum (revolutions);
         //log.debug (stepCount + " steps (direction: " + direction + ", delay: " + millisecondsDelayPerStep + ")");
         for (int i = 0; i < stepCount; ++i) {
             step (direction);
