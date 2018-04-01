@@ -89,8 +89,8 @@ public class StepperMotor {
      * @return
      */
     public static StepperMotor getMicroStepper (double stepAngle, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, double resolution) {
-        double cycleAngle = stepAngle * 4.0;
-        int cycleLength = (int) Math.round (cycleAngle / resolution);
+        // compute the closest approximation to the desired resolution
+        int cycleLength = (int) Math.round ((stepAngle * 4.0) / resolution);
         return new StepperMotor ("micro", stepAngle, controller, motorIdA, motorIdB, cycleLength, 0, false);
     }
 
@@ -130,13 +130,24 @@ public class StepperMotor {
         controller.runMotor (motorIdB, cycle[current].motor2);
     }
 
+    /**
+     *
+     * @param revolutions
+     * @return
+     */
     public StepperMotor turn (double revolutions) {
         // do it as fast as possible
         return turn (revolutions, 0);
     }
 
+    /**
+     *
+     * @param revolutions
+     * @param time
+     * @return
+     */
     public StepperMotor turn (double revolutions, double time) {
-        // XXX TODO this should be threaded in the future
+        // XXX TODO this should be (optionally) threaded in the future
 
         // stepsPerRevolution is an artifical number based on the number of discrete positions of
         // the two energizing coils with the full step model - so we have to compensate if we use a
@@ -156,18 +167,39 @@ public class StepperMotor {
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public StepperMotor stop () {
         controller.runMotor (motorIdA, 0);
         controller.runMotor (motorIdB, 0);
         return this;
     }
 
-    public String getDescription () {
-        return stepperType + "-step, cycle-length (per 4 steps): " + cycle.length + ", resolution: " + String.format ("%.04f", (stepAngle * 4) / cycle.length) + " degrees/step";
-    }
-
+    /**
+     *
+     * @param minimumCycleDelay
+     * @return
+     */
     public StepperMotor setMinimumCycleDelay (int minimumCycleDelay) {
         this.minimumCycleDelay = minimumCycleDelay;
         return this;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public double getResolution () {
+        return (stepAngle * 4.0) / cycle.length;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getDescription () {
+        return stepperType + "-step, cycle-length (per 4 steps): " + cycle.length + ", resolution: " + String.format ("%.03f", getResolution ()) + " degrees/step";
     }
 }
