@@ -1,5 +1,8 @@
 package com.brettonw.PCA9685;
 
+import com.brettonw.Utility;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 /**
@@ -9,10 +12,34 @@ import org.junit.Test;
  * or https://www.adafruit.com/product/711
  */
 public class AdafruitServoDriverTest {
+    protected static final Logger log = LogManager.getLogger (AdafruitServoDriverTest.class);
 
+    private AdafruitServoDriver servoDriver;
 
-    @Test
-    public void test1 () {
+    public AdafruitServoDriverTest () {
+        servoDriver = new AdafruitServoDriver ();
     }
 
+    @Test
+    public void testServo () {
+        if (true) {
+            //servoDriver.setPosition (0, 0);
+            int min = 4, max = 15;
+            Utility.waitD (3.0);
+            for (int j = 0; j < 5; ++j) {
+                for (int i = min; i <= max; ++i) {
+                    log.debug (i + "");
+                    servoDriver.setPosition (0, i / 100.0);
+                    Utility.waitL (10);
+                }
+                Utility.waitD (1.0);
+                for (int i = max; i >= min; --i) {
+                    log.debug (i + "");
+                    servoDriver.setPosition (0, i / 100.0);
+                    Utility.waitL (10);
+                }
+                Utility.waitD (1.0);
+            }
+        }
+    }
 }

@@ -6,13 +6,14 @@ public class AdafruitServoDriver extends PCA9685 {
 
     // default i2c address of the Adafruit server hat
     public static final int DEFAULT_ADDRESS = 0x40;
+    private final static int DEFAULT_PULSE_FREQUENCY = 60;
 
     public AdafruitServoDriver () {
         this (DEFAULT_ADDRESS);
     }
 
     public AdafruitServoDriver (int address) {
-        super (address);
+        super (address, DEFAULT_PULSE_FREQUENCY);
     }
 
     public AdafruitServoDriver setPosition (int servoId, double position) {

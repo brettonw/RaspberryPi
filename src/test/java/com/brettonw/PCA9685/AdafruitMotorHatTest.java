@@ -9,12 +9,10 @@ public class AdafruitMotorHatTest {
     protected static final Logger log = LogManager.getLogger (AdafruitMotorHatTest.class);
 
     private AdafruitMotorHat motorHat;
-    private AdafruitServoDriver servoDriver;
 
     public AdafruitMotorHatTest () {
         log.debug ("CONSTRUCT");
         motorHat = new AdafruitMotorHat ();
-        servoDriver = new AdafruitServoDriver ();
     }
 
     private void runMotor (MotorId motorId) {
@@ -50,28 +48,6 @@ public class AdafruitMotorHatTest {
         runMotor (AdafruitMotorHat.Motor.MOTOR_3);
         runMotor (AdafruitMotorHat.Motor.MOTOR_4);
         */
-    }
-
-    @Test
-    public void testServo () {
-        if (true) {
-            //servoDriver.setPosition (0, 0);
-            Utility.waitD (3.0);
-            for (int j = 0; j < 5; ++j) {
-                for (int i = 10; i <= 90; ++i) {
-                    log.debug (i + "");
-                    servoDriver.setPosition (0, i / 100.0);
-                    Utility.waitL (10);
-                }
-                Utility.waitD (1.0);
-                for (int i = 90; i >= 10; --i) {
-                    log.debug (i + "");
-                    servoDriver.setPosition (0, i / 100.0);
-                    Utility.waitL (10);
-                }
-                Utility.waitD (1.0);
-            }
-        }
     }
 
     private void backAndForth (StepperMotor stepper) {
