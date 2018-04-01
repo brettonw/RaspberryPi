@@ -24,18 +24,18 @@ public class AdafruitServoDriverTest {
     public void testServo () {
         if (true) {
             //servoDriver.setPosition (0, 0);
-            int min = 4, max = 15;
+            int min = 50, max = 170;
             Utility.waitD (3.0);
             for (int j = 0; j < 5; ++j) {
-                for (int i = min; i <= max; ++i) {
+                for (int i = min; i <= max; i += 5) {
                     log.debug (i + "");
-                    servoDriver.setPosition (0, i / 100.0);
+                    servoDriver.setPosition (0, i / 1000.0);
                     Utility.waitL (10);
                 }
                 Utility.waitD (1.0);
-                for (int i = max; i >= min; --i) {
+                for (int i = max; i >= min; i -= 5) {
                     log.debug (i + "");
-                    servoDriver.setPosition (0, i / 100.0);
+                    servoDriver.setPosition (0, i / 1000.0);
                     Utility.waitL (10);
                 }
                 Utility.waitD (1.0);
