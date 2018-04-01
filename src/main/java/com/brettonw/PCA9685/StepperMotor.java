@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 public class StepperMotor {
     private static final Logger log = LogManager.getLogger (StepperMotor.class);
 
+    // internal class for the values in a cycle
     class CycleValue {
         double motor1;
         double motor2;
@@ -54,8 +55,8 @@ public class StepperMotor {
      * @param motorIdB - the second of the two motors, or "coils"
      * @return
      */
-    public static StepperMotor getFullStepper (double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB) {
-        return new StepperMotor ("full", stepAngle, motorController, motorIdA, motorIdB, 4, Math.PI / 4.0, true);
+    public static StepperMotor getFullStepper (MotorController motorController, MotorId motorIdA, MotorId motorIdB, double stepAngle) {
+        return new StepperMotor ("full", motorController, motorIdA, motorIdB, stepAngle, 4, Math.PI / 4.0, true);
     }
 
     /**
@@ -68,8 +69,8 @@ public class StepperMotor {
      * @param motorIdB - the second of the two motors, or "coils"
      * @return
      */
-    public static StepperMotor getHalfStepper (double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB) {
-        return new StepperMotor ("half", stepAngle, motorController, motorIdA, motorIdB, 8, 0, true);
+    public static StepperMotor getHalfStepper (MotorController motorController, MotorId motorIdA, MotorId motorIdB, double stepAngle) {
+        return new StepperMotor ("half", motorController, motorIdA, motorIdB, stepAngle, 8, 0, true);
     }
 
     /**
@@ -85,8 +86,8 @@ public class StepperMotor {
      *                    numbers start at 5 and go up.
      * @return
      */
-    public static StepperMotor getMicroStepper (double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB, int cycleLength) {
-        return new StepperMotor ("micro", stepAngle, motorController, motorIdA, motorIdB, cycleLength, 0, false);
+    public static StepperMotor getMicroStepper (MotorController motorController, MotorId motorIdA, MotorId motorIdB, double stepAngle, int cycleLength) {
+        return new StepperMotor ("micro", motorController, motorIdA, motorIdB, stepAngle, cycleLength, 0, false);
     }
 
     /**
@@ -100,19 +101,19 @@ public class StepperMotor {
      * @param resolution - the desired accuracy of the motor.
      * @return
      */
-    public static StepperMotor getMicroStepper (double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB, double resolution) {
+    public static StepperMotor getMicroStepper (MotorController motorController, MotorId motorIdA, MotorId motorIdB, double resolution, double stepAngle) {
         // compute the closest approximation to the desired resolution
         int cycleLength = (int) Math.round ((stepAngle * 4.0) / resolution);
-        return new StepperMotor ("micro", stepAngle, motorController, motorIdA, motorIdB, cycleLength, 0, false);
+        return new StepperMotor ("micro", motorController, motorIdA, motorIdB, stepAngle, cycleLength, 0, false);
     }
 
-    private StepperMotor (String stepperType, double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB, int cycleLength, double startAngle, boolean saturate) {
+    private StepperMotor (String stepperType, MotorController motorController, MotorId motorIdA, MotorId motorIdB, double stepAngle, int cycleLength, double startAngle, boolean saturate) {
         this.stepperType = stepperType;
-        this.stepAngle = stepAngle;
         stepsPerRevolution = (int) Math.round (360.0 / stepAngle);
         this.motorController = motorController;
         this.motorIdA = motorIdA;
         this.motorIdB = motorIdB;
+        this.stepAngle = stepAngle;
         current = 0;
         minimumCycleDelay = MINIMUM_CYCLE_DELAY;
 

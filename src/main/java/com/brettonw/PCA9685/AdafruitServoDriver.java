@@ -2,8 +2,13 @@ package com.brettonw.PCA9685;
 
 /**
  * Servo Driver Board
+ *
  * https://learn.adafruit.com/16-channel-pwm-servo-driver/overview
- * http://www.micropik.com/PDF/SG90Servo.pdf
+ *
+ * this breakout board is a straightforward implementation of a 9685 16-Channel Pulse Width
+ * Modulation Controller (PWM) for LEDs with 12-bits of resolution. We use it to provide a bunch of
+ * PWM outputs for servos.
+ *
  */
 public class AdafruitServoDriver extends PCA9685 implements ServoController {
 

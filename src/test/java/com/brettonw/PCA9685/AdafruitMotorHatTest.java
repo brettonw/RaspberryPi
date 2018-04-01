@@ -8,33 +8,33 @@ import org.junit.Test;
 public class AdafruitMotorHatTest {
     protected static final Logger log = LogManager.getLogger (AdafruitMotorHatTest.class);
 
-    private AdafruitMotorHat motorHat;
+    private MotorController motorController;
 
     public AdafruitMotorHatTest () {
         log.debug ("CONSTRUCT");
-        motorHat = new AdafruitMotorHat ();
+        motorController = new AdafruitMotorHat ();
     }
 
     private void runMotor (MotorId motorId) {
         /*
         log.debug ("RUN (" + motorId.name () + ")");
-        if (motorHat.hasDevice ()) {
+        if (motorController.hasDevice ()) {
             log.debug ("FORWARD");
             for (int i = 0; i <= 100; i ++) {
-                motorHat.runMotor (motorId, i / 100.0);
+                motorController.runMotor (motorId, i / 100.0);
                 Utility.waitL (1);
             }
             Utility.waitD (5);
-            motorHat.stopMotor (motorId);
+            motorController.stopMotor (motorId);
             Utility.waitD (1);
 
             log.debug ("REVERSE");
             for (int i = 0; i <= 100; i++) {
-                motorHat.runMotor (motorId, i / 100.0);
+                motorController.runMotor (motorId, i / 100.0);
                 Utility.waitL (1);
             }
             Utility.waitD (5);
-            motorHat.stopMotor (motorId);
+            motorController.stopMotor (motorId);
             Utility.waitD (1);
         }
         */
@@ -69,18 +69,18 @@ public class AdafruitMotorHatTest {
     @Test
     public void testStepper () {
         if (false) {
-            backAndForth (StepperMotor.getFullStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2));
-            backAndForth (StepperMotor.getHalfStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 5));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 6));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 8));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 10));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 12));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 16));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 20));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 24));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 32));
-            backAndForth (StepperMotor.getMicroStepper (1.8, motorHat, MotorId.MOTOR_1, MotorId.MOTOR_2, 0.5));
+            backAndForth (StepperMotor.getFullStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8));
+            backAndForth (StepperMotor.getHalfStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 5));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 6));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 8));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 10));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 12));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 16));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 20));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 24));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 32));
+            backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 0.5));
         }
     }
 

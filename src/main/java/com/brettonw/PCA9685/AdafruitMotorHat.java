@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
  * this "hat" is a combination 9685 16 Channel Pulse Width Modulation Controller (PWM) for LEDs, and
  * 2 6612 H-bridge motor controllers driven off the modulated outputs. the "hat" supports four
  * motors (a stepper motor is driven as if it were two motors)
+ *
  */
 public class AdafruitMotorHat extends PCA9685 implements MotorController {
     protected static final Logger log = LogManager.getLogger (AdafruitMotorHat.class);
