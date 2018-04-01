@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
  *
  * this type of stepper is made using teeth internally that cause some number of detent positions
  * for the motor. most motors will specify the "step angle", which is the angle associated with
- * these detents in degrees
+ * these detents in degrees (typical: 1.8 degrees)
  */
 public class StepperMotor {
     protected static final Logger log = LogManager.getLogger (Motor.class);
