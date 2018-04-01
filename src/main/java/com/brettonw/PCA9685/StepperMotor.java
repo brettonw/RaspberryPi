@@ -5,6 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Stepper Motor
+ *
  * stepper motors work by driving multiple coils in a sequence. this class drives bi-polar stepper
  * motors, or motors that have two coils. The coils are activated using a pair of waveforms that are
  * out of phase with each other. another way to think about the coil activations is to think of the
@@ -16,14 +18,24 @@ import org.apache.logging.log4j.Logger;
  * these detents in degrees (typical: 1.8 degrees)
  */
 public class StepperMotor {
-    protected static final Logger log = LogManager.getLogger (Motor.class);
+    private static final Logger log = LogManager.getLogger (StepperMotor.class);
 
-    public static final int MINIMUM_CYCLE_DELAY = 2;
+    class CycleValue {
+        double motor1;
+        double motor2;
+
+        CycleValue (double motor1, double motor2, boolean saturate) {
+            this.motor1 = saturate ? (Utility.saturate (motor1)) : motor1;
+            this.motor2 = saturate ? (Utility.saturate (motor2)) : motor2;
+        }
+    }
+
+    private static final int MINIMUM_CYCLE_DELAY = 2;
 
     private final String stepperType;
     private final double stepAngle;
     private final int stepsPerRevolution;
-    private final AdafruitMotorHat controller;
+    private final MotorController motorController;
     private final MotorId motorIdA;
     private final MotorId motorIdB;
     private final CycleValue cycle[];
@@ -37,27 +49,27 @@ public class StepperMotor {
      * steps, but starts at a 45 degree offset and saturates the control values. this way, both
      * coils are always fully activated, making the cycle robust.
      * @param stepAngle - the degrees per step from the motor specification
-     * @param controller - the Adafruit motor controller, two motors are used to drive the stepper
+     * @param motorController  - the motor motorController, two motors are used to drive the stepper
      * @param motorIdA - the first of the two motors, or "coils"
      * @param motorIdB - the second of the two motors, or "coils"
      * @return
      */
-    public static StepperMotor getFullStepper (double stepAngle, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB) {
-        return new StepperMotor ("full", stepAngle, controller, motorIdA, motorIdB, 4, Math.PI / 4.0, true);
+    public static StepperMotor getFullStepper (double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB) {
+        return new StepperMotor ("full", stepAngle, motorController, motorIdA, motorIdB, 4, Math.PI / 4.0, true);
     }
 
     /**
      * a half-stepper starts at 0 degrees, proceeds at 45 degree intervals, and saturates the
-     * control values. the result is more precise than a full step controller, but the torque varies
+     * control values. the result is more precise than a full step motorController, but the torque varies
      * because the motor alternates between a single coil and both coils being activated.
      * @param stepAngle - the degrees per step from the motor specification
-     * @param controller - the Adafruit motor controller, two motors are used to drive the stepper
+     * @param motorController  - the motor motorController, two motors are used to drive the stepper
      * @param motorIdA - the first of the two motors, or "coils"
      * @param motorIdB - the second of the two motors, or "coils"
      * @return
      */
-    public static StepperMotor getHalfStepper (double stepAngle, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB) {
-        return new StepperMotor ("half", stepAngle, controller, motorIdA, motorIdB, 8, 0, true);
+    public static StepperMotor getHalfStepper (double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB) {
+        return new StepperMotor ("half", stepAngle, motorController, motorIdA, motorIdB, 8, 0, true);
     }
 
     /**
@@ -65,7 +77,7 @@ public class StepperMotor {
      * according to the stepCount.
      *
      * @param stepAngle   - the degrees per step from the motor specification
-     * @param controller  - the Adafruit motor controller, two motors are used to drive the stepper
+     * @param motorController  - the motor motorController, two motors are used to drive the stepper
      * @param motorIdA    - the first of the two motors, or "coils"
      * @param motorIdB    - the second of the two motors, or "coils"
      * @param cycleLength - the number of internal steps per cycle. at higher counts, this can drive
@@ -73,8 +85,8 @@ public class StepperMotor {
      *                    numbers start at 5 and go up.
      * @return
      */
-    public static StepperMotor getMicroStepper (double stepAngle, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, int cycleLength) {
-        return new StepperMotor ("micro", stepAngle, controller, motorIdA, motorIdB, cycleLength, 0, false);
+    public static StepperMotor getMicroStepper (double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB, int cycleLength) {
+        return new StepperMotor ("micro", stepAngle, motorController, motorIdA, motorIdB, cycleLength, 0, false);
     }
 
     /**
@@ -82,23 +94,23 @@ public class StepperMotor {
      * according to the desired angular resolution.
      *
      * @param stepAngle   - the degrees per step from the motor specification
-     * @param controller  - the Adafruit motor controller, two motors are used to drive the stepper
+     * @param motorController  - the motor motorController, two motors are used to drive the stepper
      * @param motorIdA    - the first of the two motors, or "coils"
      * @param motorIdB    - the second of the two motors, or "coils"
      * @param resolution - the desired accuracy of the motor.
      * @return
      */
-    public static StepperMotor getMicroStepper (double stepAngle, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, double resolution) {
+    public static StepperMotor getMicroStepper (double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB, double resolution) {
         // compute the closest approximation to the desired resolution
         int cycleLength = (int) Math.round ((stepAngle * 4.0) / resolution);
-        return new StepperMotor ("micro", stepAngle, controller, motorIdA, motorIdB, cycleLength, 0, false);
+        return new StepperMotor ("micro", stepAngle, motorController, motorIdA, motorIdB, cycleLength, 0, false);
     }
 
-    private StepperMotor (String stepperType, double stepAngle, AdafruitMotorHat controller, MotorId motorIdA, MotorId motorIdB, int cycleLength, double startAngle, boolean saturate) {
+    private StepperMotor (String stepperType, double stepAngle, MotorController motorController, MotorId motorIdA, MotorId motorIdB, int cycleLength, double startAngle, boolean saturate) {
         this.stepperType = stepperType;
         this.stepAngle = stepAngle;
         stepsPerRevolution = (int) Math.round (360.0 / stepAngle);
-        this.controller = controller;
+        this.motorController = motorController;
         this.motorIdA = motorIdA;
         this.motorIdB = motorIdB;
         current = 0;
@@ -126,8 +138,8 @@ public class StepperMotor {
         log.trace ("current: " + current);
 
         log.trace ("A (" + String.format ("%.04f", cycle[current].motor1) + "), B (" + String.format ("%.04f", cycle[current].motor2) + ")");
-        controller.runMotor (motorIdA, cycle[current].motor1);
-        controller.runMotor (motorIdB, cycle[current].motor2);
+        motorController.runMotor (motorIdA, cycle[current].motor1);
+        motorController.runMotor (motorIdB, cycle[current].motor2);
     }
 
     /**
@@ -172,8 +184,8 @@ public class StepperMotor {
      * @return
      */
     public StepperMotor stop () {
-        controller.runMotor (motorIdA, 0);
-        controller.runMotor (motorIdB, 0);
+        motorController.runMotor (motorIdA, 0);
+        motorController.runMotor (motorIdB, 0);
         return this;
     }
 

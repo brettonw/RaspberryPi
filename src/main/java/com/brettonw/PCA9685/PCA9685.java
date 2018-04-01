@@ -9,10 +9,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-// This is a software interface for the PCA9685. It is a 16-channel Pulse Width Modulator (PWM)
-// Controller (designed to drive LEDs) with 12 bits of resolution, and controlled over the I2C bus.
-// The 9685 is used in the Adafruit motor hat and the servo driver board
-// https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf
+
+/**
+ * This is a software interface for the PCA9685. It is a 16-channel Pulse Width Modulator (PWM)
+ * Controller (designed to drive LEDs) with 12 bits of resolution, and controlled over the I2C bus.
+ * The 9685 is used in the Adafruit motor hat and the servo driver board
+ *
+ * https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf
+ *
+ */
 public class PCA9685 {
     protected static final Logger log = LogManager.getLogger (PCA9685.class);
 
@@ -140,6 +145,11 @@ public class PCA9685 {
 
     protected void setChannelOff (int channel) {
         setChannelPulse (channel, 0, CHANNEL_FORCE);
+    }
+
+    protected void setChannelPulseMs (int channel, double milliseconds) {
+        int width = (int) Math.round ((CHANNEL_HIGH * milliseconds * pulseFrequency) / 1.0e3);
+        setChannelPulse (channel, width);
     }
 
     // values used for setting the pulse frequency, the default is 1ms per cycle

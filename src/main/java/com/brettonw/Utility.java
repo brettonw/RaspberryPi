@@ -24,4 +24,8 @@ public class Utility {
     public static double saturate (double value) {
         return (Math.abs (value) > 0.5) ? Math.signum (value) : 0;
     }
+
+    public static double clamp (double value, double min, double max) {
+        return Math.min (max, Math.max (min, value));
+    }
 }
