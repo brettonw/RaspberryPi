@@ -9,17 +9,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-
 /**
  * This is a software interface for the PCA9685. It is a 16-channel Pulse Width Modulator (PWM)
  * Controller (designed to drive LEDs) with 12 bits of resolution, and controlled over the I2C bus.
  * The 9685 is used in the Adafruit motor hat and the servo driver board
- *
+ * <p>
  * https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf
- *
  */
 public class PCA9685 {
-    protected static final Logger log = LogManager.getLogger (PCA9685.class);
+    private static final Logger log = LogManager.getLogger (PCA9685.class);
 
     // registers (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - table 4)
     protected static final int MODE1 = 0x00;
@@ -50,20 +48,54 @@ public class PCA9685 {
     protected final static int OUTDRV = 0x04;
 
     // internal variables
-    protected I2CBus i2cBus;
     protected I2CDevice i2cDevice;
     protected int pulseFrequency;
 
+    /**
+     *
+     * @param address
+     */
     public PCA9685 (int address) {
         this (address, DEFAULT_PULSE_FREQUENCY);
     }
 
-    public PCA9685 (int address, int pulseFrequency) {
+    private static I2CDevice connect (int address) {
+        // get the i2c bus, and device
+        I2CDevice i2cDevice = null;
         try {
-            // get the i2c bus, and device
-            i2cBus = I2CFactory.getInstance (I2CBus.BUS_1);
-            i2cDevice = i2cBus.getDevice (address);
+            i2cDevice = I2CFactory.getInstance (I2CBus.BUS_1).getDevice (address);
             log.debug ("Successfully connected to PCA9685 on i2c@" + address);
+        } catch (Exception exception) {
+            log.error ("Failure to connect to i2c@" + address, exception);
+        }
+        return i2cDevice;
+    }
+
+    /**
+     *
+     * @param address
+     * @param pulseFrequency
+     */
+    public PCA9685 (int address, int pulseFrequency) {
+        this (connect (address), pulseFrequency);
+    }
+
+    /**
+     *
+     * @param i2cDevice
+     */
+    public PCA9685 (I2CDevice i2cDevice) {
+        this (i2cDevice, DEFAULT_PULSE_FREQUENCY);
+    }
+
+    /**
+     *
+     * @param i2cDevice
+     * @param pulseFrequency
+     */
+    public PCA9685 (I2CDevice i2cDevice, int pulseFrequency) {
+        try {
+            this.i2cDevice = i2cDevice;
 
             // init, everything off
             setChannelPulse (CHANNEL_All, 0, 0);
@@ -74,16 +106,14 @@ public class PCA9685 {
 
             // wake up
             int mode1 = i2cDevice.read (MODE1) & ~SLEEP;
-            i2cDevice.write (MODE1, (byte)mode1);
+            i2cDevice.write (MODE1, (byte) mode1);
             // the chip takes 500 microseconds to recover from turning off the SLEEP bit
             Thread.sleep (1);
 
             // setup
             setPulseFrequency (pulseFrequency);
-        }
-        catch (Exception exception) {
-            log.error ("Failure to connect to i2c@" + address, exception);
-            i2cDevice = null;
+        } catch (Exception exception) {
+            log.error (exception);
         }
     }
 
@@ -162,29 +192,31 @@ public class PCA9685 {
     /**
      * Set the frequency of pulses across the whole controller - each channel has 12-bits
      * of resolution (4,096 division) for setting the pulse duration within the cycle
-     * @param pulseFrequency
-     * @throws IOException
+     *
+     * @param pulseFrequency number of pulses per second for the whole board, value in Hertz (Hz)
      */
-    public void setPulseFrequency (int pulseFrequency) throws IOException {
-        this.pulseFrequency = pulseFrequency;
+    public void setPulseFrequency (int pulseFrequency) {
+        try {
+            this.pulseFrequency = pulseFrequency;
 
-        // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.5)
-        int preScale = ((int) (Math.round (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * pulseFrequency)))) - 1;
-        log.trace ("pre-scale:" + String.format ("0x%02x", preScale));
-        preScale = Math.min (Math.max (MIN_PRE_SCALE, preScale), MAX_PRE_SCALE);
-        log.debug ("@" + pulseFrequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
+            // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.5)
+            int preScale = ((int) (Math.round (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * pulseFrequency)))) - 1;
+            log.trace ("pre-scale:" + String.format ("0x%02x", preScale));
+            preScale = Math.min (Math.max (MIN_PRE_SCALE, preScale), MAX_PRE_SCALE);
+            log.debug ("@" + pulseFrequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
 
-        // PRE_SCALE can only be set when the SLEEP bit of the MODE1 register is set to logic 1.
-        int oldMode = i2cDevice.read (MODE1);
-        byte newMode = (byte) ((oldMode & 0x7F) | SLEEP);
-        i2cDevice.write (MODE1, newMode);
-        i2cDevice.write (PRE_SCALE, (byte) (Math.floor (preScale)));
-        i2cDevice.write (MODE1, (byte) oldMode);
+            // PRE_SCALE can only be set when the SLEEP bit of the MODE1 register is set to logic 1.
+            int oldMode = i2cDevice.read (MODE1);
+            byte newMode = (byte) ((oldMode & 0x7F) | SLEEP);
+            i2cDevice.write (MODE1, newMode);
+            i2cDevice.write (PRE_SCALE, (byte) (Math.floor (preScale)));
+            i2cDevice.write (MODE1, (byte) oldMode);
 
-        // SLEEP bit must be 0 for at least 500us before 1 is written into the RESTART bit.
-        Utility.waitL (1);
-        i2cDevice.write (MODE1, (byte) (oldMode | RESTART));
+            // SLEEP bit must be 0 for at least 500us before 1 is written into the RESTART bit.
+            Utility.waitL (1);
+            i2cDevice.write (MODE1, (byte) (oldMode | RESTART));
+        } catch (IOException exception) {
+            log.error (exception);
+        }
     }
-
-
 }

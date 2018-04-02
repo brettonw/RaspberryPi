@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 public class AdafruitMotorHatTest {
-    protected static final Logger log = LogManager.getLogger (AdafruitMotorHatTest.class);
+    private static final Logger log = LogManager.getLogger (AdafruitMotorHatTest.class);
 
     private MotorController motorController;
 

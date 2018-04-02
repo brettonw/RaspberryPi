@@ -10,5 +10,5 @@ public interface ServoController {
      * @param milliseconds - the width of the pulse in milliseconds
      * @return this, for chaining
      */
-    void setPulseDuration (int servoId, double milliseconds);
+    void setPulseDuration (ServoId servoId, double milliseconds);
 }

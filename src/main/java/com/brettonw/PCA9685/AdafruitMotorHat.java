@@ -1,7 +1,11 @@
 package com.brettonw.PCA9685;
 
+import com.pi4j.io.i2c.I2CDevice;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * DC and Stepper Motor Hat
@@ -15,7 +19,29 @@ import org.apache.logging.log4j.Logger;
  *
  */
 public class AdafruitMotorHat extends PCA9685 implements MotorController {
-    protected static final Logger log = LogManager.getLogger (AdafruitMotorHat.class);
+    private static final Logger log = LogManager.getLogger (AdafruitMotorHat.class);
+
+    // internal class for the components of a motor
+    static class MotorSpec {
+        int modulator;
+        int frontPin;
+        int backPin;
+
+        MotorSpec (int modulator, int frontPin, int backPin) {
+            this.modulator = modulator;
+            this.frontPin = frontPin;
+            this.backPin = backPin;
+        }
+    }
+
+    private static final Map<MotorId, MotorSpec> motorSpecs;
+    static {
+        motorSpecs = new HashMap<> (4);
+        motorSpecs.put (MotorId.MOTOR_1, new MotorSpec (8, 9, 10));
+        motorSpecs.put (MotorId.MOTOR_2, new MotorSpec (13, 12, 11));
+        motorSpecs.put (MotorId.MOTOR_3, new MotorSpec (2, 3, 4));
+        motorSpecs.put (MotorId.MOTOR_4, new MotorSpec (7, 6, 5));
+    }
 
     public static final int DEFAULT_ADDRESS = 0x60;
 
@@ -31,38 +57,29 @@ public class AdafruitMotorHat extends PCA9685 implements MotorController {
         super (address);
     }
 
-    private void runMotor (int modulator, int frontPin, int backPin, double speed) {
-        try {
-            if (speed < 0.0) {
-                setChannelOff (frontPin);
-                setChannelOn (backPin);
-                setChannelPulse (modulator, (int) (-speed * CHANNEL_HIGH));
-            } else if (speed > 0.0) {
-                setChannelOn (frontPin);
-                setChannelOff (backPin);
-                setChannelPulse (modulator, (int) (speed * CHANNEL_HIGH));
-            } else if (speed == 0.0) {
-                setChannelOff (frontPin);
-                setChannelOff (backPin);
-                setChannelOff (modulator);
-            }
-        }
-        catch (Exception exception) {
-            log.error (exception);
-        }
+    public AdafruitMotorHat (I2CDevice i2CDevice) {
+        super (i2CDevice);
     }
 
     /**
      * run a motor
      * @param motorId - which motor to run
-     * @param speed - the speed to run it at  int he range 0..1, 0 is stopped.
+     * @param speed - the speed to run it at in the range 0..1, 0 is stopped.
      */
     public void runMotor (MotorId motorId, double speed) {
-        switch (motorId) {
-            case MOTOR_1: runMotor (8, 9, 10, speed); break;
-            case MOTOR_2: runMotor (13, 12, 11, speed); break;
-            case MOTOR_3: runMotor (2, 3, 4, speed); break;
-            case MOTOR_4: runMotor (7, 6, 5, speed); break;
+        MotorSpec motorSpec = motorSpecs.get (motorId);
+        if (speed < 0.0) {
+            setChannelOff (motorSpec.frontPin);
+            setChannelOn (motorSpec.backPin);
+            setChannelPulse (motorSpec.modulator, (int) (-speed * CHANNEL_HIGH));
+        } else if (speed > 0.0) {
+            setChannelOn (motorSpec.frontPin);
+            setChannelOff (motorSpec.backPin);
+            setChannelPulse (motorSpec.modulator, (int) (speed * CHANNEL_HIGH));
+        } else if (speed == 0.0) {
+            setChannelOff (motorSpec.frontPin);
+            setChannelOff (motorSpec.backPin);
+            setChannelOff (motorSpec.modulator);
         }
     }
 }
