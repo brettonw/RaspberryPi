@@ -9,7 +9,8 @@ import org.apache.logging.log4j.Logger;
  * <p>
  * analog servos have 3-wire inputs, two power leads and a signal line. they work by sending a timed
  * pulse on the signal line at a fixed frequency (nominal 50Hz), which signals the position the
- * servo should be at.
+ * servo should be at. Most servos seem to use a positioning scheme that puts the response range
+ * from a 1ms to 2ms pulse, with the zero point at a 1.5ms pulse.
  * <p>
  * for example:
  * http://www.micropik.com/PDF/SG90Servo.pdf
@@ -22,6 +23,17 @@ public class Servo {
     private double min;
     private double max;
     private double position;
+
+    /**
+     * contructor to use the default signal min and max values of 1ms and 2ms which are typical of
+     * all servos, as near as I can tell. However, there is a lot of variance from servo to servo,
+     * so this is really just a starting point for most servos.
+     * @param servoController the controller to use for this servo
+     * @param servoId         the id corresponding to the driver pins for this servo on the controller
+     */
+    public Servo (ServoController servoController, ServoId servoId) {
+        this (servoController, servoId, 1, 2);
+    }
 
     /**
      * @param servoController the controller to use for this servo
