@@ -5,7 +5,7 @@ a host of accessories to do things like run motors and experiment with external 
 the world of external electronics, and make no representation of correctness or accuracy in any of this,
 but it's what is working for me.
 
-![Picture of my cluster](https://brettonw.github.io/RaspberryPi/img/IMG_6875.jpg =200)
+![Picture of my cluster](https://brettonw.github.io/RaspberryPi/img/IMG_6875.jpg)
 
 ## Cluster
 I watched a lot of YouTube videos by people who made Raspberry Pi clusters, including some with 100s
