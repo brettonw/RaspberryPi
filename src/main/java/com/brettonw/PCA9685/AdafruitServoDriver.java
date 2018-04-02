@@ -43,7 +43,7 @@ public class AdafruitServoDriver extends PCA9685 implements ServoController {
 
     // default i2c address of the Adafruit server hat
     private static final int DEFAULT_ADDRESS = 0x40;
-    private final static int DEFAULT_PULSE_FREQUENCY = 50;
+    private final static int DEFAULT_PULSE_FREQUENCY = 100;
 
     /**
      *
