@@ -45,7 +45,7 @@ public class ServoTest {
         testDevice
                 .expect (0x0006, (byte) 0x00)
                 .expect (0x0007, (byte) 0x00)
-                .expect (0x0008, (byte) 0x66)
+                .expect (0x0008, (byte) 0x67)
                 .expect (0x0009, (byte) 0x01);
         servo.setPosition (0.5);
         assertTrue (servo.getPosition () == 0.5);

@@ -49,7 +49,7 @@ public class PCA9685 {
 
     // internal variables
     protected I2CDevice i2cDevice;
-    protected int pulseFrequency;
+    protected double pulseFrequency;
 
     /**
      *
@@ -193,17 +193,21 @@ public class PCA9685 {
      * Set the frequency of pulses across the whole controller - each channel has 12-bits
      * of resolution (4,096 division) for setting the pulse duration within the cycle
      *
-     * @param pulseFrequency number of pulses per second for the whole board, value in Hertz (Hz)
+     * @param requestedPulseFrequency requested number of pulses per second for the whole board,
+     *                                value in Hertz (Hz). The code tries to accomodate the request
+     *                                as best as it can.
      */
-    public void setPulseFrequency (int pulseFrequency) {
+    public void setPulseFrequency (int requestedPulseFrequency) {
         try {
-            this.pulseFrequency = pulseFrequency;
-
             // (https://cdn-shop.adafruit.com/datasheets/PCA9685.pdf - Section 7.3.5)
-            int preScale = ((int) (Math.round (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * pulseFrequency)))) - 1;
+            int preScale = ((int) (Math.round (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * requestedPulseFrequency)))) - 1;
             log.trace ("pre-scale:" + String.format ("0x%02x", preScale));
             preScale = Math.min (Math.max (MIN_PRE_SCALE, preScale), MAX_PRE_SCALE);
-            log.debug ("@" + pulseFrequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
+            log.debug ("@" + requestedPulseFrequency + " Hz, (pre-scale:" + String.format ("0x%02x", preScale) + ")");
+
+            // compute the *actual* pulse frequency by inverting the equation
+            pulseFrequency = (CLOCK_FREQUENCY / (CHANNEL_RESOLUTION * (preScale + 1)));
+            log.debug ("@" + String.format ("%.04f", pulseFrequency) + "Hz (actual)");
 
             // PRE_SCALE can only be set when the SLEEP bit of the MODE1 register is set to logic 1.
             int oldMode = i2cDevice.read (MODE1);
