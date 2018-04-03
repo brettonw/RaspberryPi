@@ -16,16 +16,21 @@ public class AdafruitServoDriverTest {
 
     @Test
     public void testServo () {
-        Servo servo = new Servo (servoController, ServoId.SERVO_01, 1, 2);
+        Servo servo1 = new Servo (servoController, ServoId.SERVO_01, 1, 2);
+        Servo servo9 = new Servo (servoController, ServoId.SERVO_09, 1, 2);
         Utility.waitD (3.0);
         for (int j = 0; j < 5; ++j) {
-            servo.setPosition (1);
+            servo1.setPosition (1);
+            servo9.setPosition (1);
             Utility.waitD (1.0);
-            servo.setPosition (0);
+            servo1.setPosition (0);
+            servo9.setPosition (0);
             Utility.waitD (1.0);
-            servo.setPosition (-1);
+            servo1.setPosition (-1);
+            servo9.setPosition (-1);
             Utility.waitD (1.0);
-            servo.setPosition (0);
+            servo1.setPosition (0);
+            servo9.setPosition (0);
             Utility.waitD (3.0);
         }
     }

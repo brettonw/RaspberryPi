@@ -172,7 +172,7 @@ public class StepperMotor {
         // time is in seconds
         int millisecondsDelayPerStep = Math.max((int) Math.round ((1_000.0 * time) / stepCount), minimumCycleDelay);
         int direction = (int) Math.signum (revolutions);
-        log.info (stepCount + " steps (direction: " + direction + ", delay: " + millisecondsDelayPerStep + ")");
+        log.debug (stepCount + " steps (direction: " + direction + ", delay: " + millisecondsDelayPerStep + ")");
         for (int i = 0; i < stepCount; ++i) {
             step (direction);
             Utility.waitL (millisecondsDelayPerStep);
