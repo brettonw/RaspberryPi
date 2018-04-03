@@ -34,12 +34,22 @@ public class ServoTest {
             // (setPulseDuration) - servoId: SERVO_01, milliseconds: 1.000
             .expect (0x0006, (byte) 0x00)
             .expect (0x0007, (byte) 0x00)
-            .expect (0x0008, (byte) 0xcd)
-            .expect (0x0009, (byte) 0x00);
+            .expect (0x0008, (byte) 0x33)
+            .expect (0x0009, (byte) 0x01);
         Servo servo = new Servo (testController, ServoId.SERVO_01, min, max);
         assertTrue (servo.getServoId () == ServoId.SERVO_01);
         assertTrue (servo.getPosition () == 0);
-        assertTrue (testController.getPulseDuration (servo.getServoId ()) == min);
+        assertTrue (testController.getPulseDuration (servo.getServoId ()) == ((min + max) * 0.5));
+        testDevice.report ();
+
+        testDevice
+                .expect (0x0006, (byte) 0x00)
+                .expect (0x0007, (byte) 0x00)
+                .expect (0x0008, (byte) 0x66)
+                .expect (0x0009, (byte) 0x01);
+        servo.setPosition (0.5);
+        assertTrue (servo.getPosition () == 0.5);
+        assertTrue (testController.getPulseDuration (servo.getServoId ()) == min + ((max - min) * 0.75));
         testDevice.report ();
 
         testDevice
@@ -55,16 +65,6 @@ public class ServoTest {
         testDevice
             .expect (0x0006, (byte) 0x00)
             .expect (0x0007, (byte) 0x00)
-            .expect (0x0008, (byte) 0x33)
-            .expect (0x0009, (byte) 0x01);
-        servo.setPosition (0.5);
-        assertTrue (servo.getPosition () == 0.5);
-        assertTrue (testController.getPulseDuration (servo.getServoId ()) == min + ((max - min) * 0.5));
-        testDevice.report ();
-
-        testDevice
-            .expect (0x0006, (byte) 0x00)
-            .expect (0x0007, (byte) 0x00)
             .expect (0x0008, (byte) 0x9a)
             .expect (0x0009, (byte) 0x01);
         servo.setPosition (1.5);
@@ -73,12 +73,32 @@ public class ServoTest {
         testDevice.report ();
 
         testDevice
-            .expect (0x0006, (byte) 0x00)
-            .expect (0x0007, (byte) 0x00)
-            .expect (0x0008, (byte) 0xcd)
-            .expect (0x0009, (byte) 0x00);
+                .expect (0x0006, (byte) 0x00)
+                .expect (0x0007, (byte) 0x00)
+                .expect (0x0008, (byte) 0x00)
+                .expect (0x0009, (byte) 0x01);
         servo.setPosition (-0.5);
-        assertTrue (servo.getPosition () == 0);
+        assertTrue (servo.getPosition () == -0.5);
+        assertTrue (testController.getPulseDuration (servo.getServoId ()) == min + ((max - min) * 0.25));
+        testDevice.report ();
+
+        testDevice
+                .expect (0x0006, (byte) 0x00)
+                .expect (0x0007, (byte) 0x00)
+                .expect (0x0008, (byte) 0xcd)
+                .expect (0x0009, (byte) 0x00);
+        servo.setPosition (-1.0);
+        assertTrue (servo.getPosition () == -1.0);
+        assertTrue (testController.getPulseDuration (servo.getServoId ()) == min);
+        testDevice.report ();
+
+        testDevice
+                .expect (0x0006, (byte) 0x00)
+                .expect (0x0007, (byte) 0x00)
+                .expect (0x0008, (byte) 0xcd)
+                .expect (0x0009, (byte) 0x00);
+        servo.setPosition (-1.5);
+        assertTrue (servo.getPosition () == -1.0);
         assertTrue (testController.getPulseDuration (servo.getServoId ()) == min);
         testDevice.report ();
     }

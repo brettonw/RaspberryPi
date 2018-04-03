@@ -50,12 +50,12 @@ public class Servo {
     }
 
     /**
-     * @param position - in the range 0..1
+     * @param position - in the range -1..1
      * @return
      */
     public Servo setPosition (double position) {
-        this.position = position = Utility.clamp (position, 0, 1);
-        double pulseDurationMilliseconds = min + ((max - min) * position);
+        this.position = position = Utility.clamp (position, -1, 1);
+        double pulseDurationMilliseconds = min + ((max - min) * (position + 1) * 0.5);
         log.trace (servoId.name () + "@" + String.format ("%.04f", pulseDurationMilliseconds));
         servoController.setPulseDuration (servoId, pulseDurationMilliseconds);
         return this;

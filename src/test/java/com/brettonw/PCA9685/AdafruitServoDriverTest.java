@@ -23,6 +23,10 @@ public class AdafruitServoDriverTest {
             Utility.waitD (1.0);
             servo.setPosition (0);
             Utility.waitD (1.0);
+            servo.setPosition (-1);
+            Utility.waitD (1.0);
+            servo.setPosition (0);
+            Utility.waitD (3.0);
         }
     }
 }
