@@ -42,7 +42,7 @@ public class RangeTest {
 
             // compute the round trip time - half of which was spent travelling the distance to the
             // target, and half was spent travelling back
-            double time = elapsed / 1_000_000.0;
+            double time = elapsed / 1e9;
             double speedOfSound = 343.0; // m/s
             double distance = speedOfSound * (time / 2.0);
             log.info ("Distance: " + String.format ("%02fcm", distance * 100));
