@@ -21,6 +21,15 @@ public class Utility {
         waitL (Math.round (seconds * 1_000L));
     }
 
+    public static void waitBusy (int microseconds) {
+        final long startTime = System.nanoTime ();
+        final long nanoseconds = microseconds * 1_000;
+        long elapsed;
+        do {
+            elapsed = System.nanoTime () - startTime;
+        } while (elapsed < nanoseconds);
+    }
+
     public static double saturate (double value) {
         return (Math.abs (value) > 0.5) ? Math.signum (value) : 0;
     }

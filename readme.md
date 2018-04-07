@@ -47,7 +47,8 @@ My goal is to re-write the low level compoenents into my own design idioms as a 
 what the parts are doing.
 
 #### Reference
-- [pinout diagram](http://pi4j.com/images/gpio-control-example-large.png)
+- [Pinout diagram](http://pi4j.com/images/j8header-3b-large.png)
+- [Using HC-SR04 Ultrasonic Range Sensor](https://www.modmypi.com/blog/hc-sr04-ultrasonic-range-sensor-on-the-raspberry-pi)
 
 ### Parts List
 - [Adafruit DC & Stepper Motor HAT for Raspberry Pi](http://a.co/3hptr0h)
