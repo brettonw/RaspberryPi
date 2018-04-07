@@ -102,13 +102,13 @@ public class PCA9685 {
             i2cDevice.write (MODE2, (byte) OUTDRV);
             i2cDevice.write (MODE1, (byte) ALLCALL);
             // the chip takes 500 microseconds to recover from changes to the control registers
-            Utility.waitBusy (500);
+            Utility.waitShort (500);
 
             // wake up
             int mode1 = i2cDevice.read (MODE1) & ~SLEEP;
             i2cDevice.write (MODE1, (byte) mode1);
             // the chip takes 500 microseconds to recover from turning off the SLEEP bit
-            Utility.waitBusy (500);
+            Utility.waitShort (500);
 
             // setup
             setPulseFrequency (pulseFrequency);
@@ -217,7 +217,7 @@ public class PCA9685 {
             i2cDevice.write (MODE1, (byte) oldMode);
 
             // SLEEP bit must be 0 for at least 500us before 1 is written into the RESTART bit.
-            Utility.waitBusy (500);
+            Utility.waitShort (500);
             i2cDevice.write (MODE1, (byte) (oldMode | RESTART));
         } catch (IOException exception) {
             log.error (exception);

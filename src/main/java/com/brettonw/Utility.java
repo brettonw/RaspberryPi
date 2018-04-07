@@ -7,7 +7,7 @@ public class Utility {
     protected static final Logger log = LogManager.getLogger (Utility.class);
 
     // internal wait functions
-    public static void waitL (long milliseconds) {
+    public static void waitL (int milliseconds) {
         if (milliseconds >= 0) {
             try {
                 Thread.sleep (milliseconds);
@@ -18,7 +18,7 @@ public class Utility {
     }
 
     public static void waitD (double seconds) {
-        waitL (Math.round (seconds * 1_000L));
+        waitL ((int) Math.round (seconds * 1_000));
     }
 
     public static void waitBusy (int microseconds) {
@@ -28,6 +28,16 @@ public class Utility {
         do {
             elapsed = System.nanoTime () - startTime;
         } while (elapsed < nanoseconds);
+    }
+
+    public static void waitShort (int microseconds) {
+        if (microseconds < 2_000) {
+            waitBusy (microseconds);
+        } else {
+            int milliseconds = Math.round (microseconds / 1_000);
+            waitL (milliseconds);
+            waitBusy (microseconds - (milliseconds * 1_000));
+        }
     }
 
     public static double saturate (double value) {

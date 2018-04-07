@@ -31,7 +31,7 @@ public class StepperMotor {
         }
     }
 
-    private static final int MINIMUM_CYCLE_DELAY = 2;
+    private static final int MINIMUM_CYCLE_DELAY = 20;
 
     private final String stepperType;
     private final double stepAngle;
@@ -170,12 +170,12 @@ public class StepperMotor {
         int stepCount = (int) Math.round (Math.abs (revolutions) * (((cycle.length * stepsPerRevolution) / 4) + 1));
 
         // time is in seconds
-        int millisecondsDelayPerStep = Math.max((int) Math.round ((1_000.0 * time) / stepCount), minimumCycleDelay);
+        int microsecondsDelayPerStep = Math.max((int) Math.round ((1_000_000.0 * time) / stepCount), minimumCycleDelay);
         int direction = (int) Math.signum (revolutions);
-        log.debug (stepCount + " steps (direction: " + direction + ", delay: " + millisecondsDelayPerStep + ")");
+        log.debug (stepCount + " steps (direction: " + direction + ", delay: " + microsecondsDelayPerStep + ")");
         for (int i = 0; i < stepCount; ++i) {
             step (direction);
-            Utility.waitL (millisecondsDelayPerStep);
+            Utility.waitShort (microsecondsDelayPerStep);
         }
         return this;
     }
