@@ -29,7 +29,7 @@ public class RangeTest {
 
         for (int i = 0; i < 1_000; ++i) {
 
-            log.info ("sending 10ms pulse.");
+            //log.info ("sending 10ms pulse.");
             pin23.high ();
             Utility.waitBusy (10);
             pin23.low ();
