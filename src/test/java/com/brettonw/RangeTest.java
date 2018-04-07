@@ -8,6 +8,25 @@ import org.junit.Test;
 public class RangeTest {
     protected static final Logger log = LogManager.getLogger (RangeTest.class);
 
+    long timeout = 1_000_000_000;
+    private long waitForPinLow (GpioPinDigitalInput pin) {
+        long elapsed = 0;
+        long startTime = System.nanoTime ();
+        while (pin.isHigh () && (elapsed < timeout)) {
+            elapsed = System.nanoTime () - startTime;
+        }
+        return pin.isLow () ? elapsed : -elapsed;
+    }
+
+    private long waitForPinHigh (GpioPinDigitalInput pin) {
+        long elapsed = 0;
+        long startTime = System.nanoTime ();
+        while (pin.isLow () && (elapsed < timeout)) {
+            elapsed = System.nanoTime () - startTime;
+        }
+        return pin.isHigh () ? elapsed : -elapsed;
+    }
+
     @Test
     public void testHcSr04 () throws InterruptedException {
         log.info ("started.");
@@ -35,20 +54,21 @@ public class RangeTest {
             pin23.low ();
 
             // now wait for the response
-            while (pin24.isLow ()) {}
-            long startTime = System.nanoTime ();
-            while (pin24.isHigh ()) {}
-            long elapsed = System.nanoTime () - startTime;
-
-            // compute the round trip time - half of which was spent travelling the distance to the
-            // target, and half was spent travelling back
-            double time = elapsed / 1e9;
-            double speedOfSound = 343.0; // m/s
-            double distance = speedOfSound * (time / 2.0);
-            log.info ("Distance: " + String.format ("%02fcm", distance * 100));
+            long timeToPinHigh = waitForPinHigh (pin24);
+            long elapsed = 0;
+            if (timeToPinHigh > 0) {
+                if ((elapsed = waitForPinLow (pin24)) > 0) {
+                    // compute the round trip time - half of which was spent travelling the distance to the
+                    // target, and half was spent travelling back
+                    double time = elapsed / 1e9;
+                    double speedOfSound = 343.0; // m/s
+                    double distance = speedOfSound * (time / 2.0);
+                    log.info ("Distance: " + String.format ("%02fcm", distance * 100));
+                }
+            }
 
             // http://www.micropik.com/PDF/HCSR04.pdf says to use over 60ms cycle to prevent reading echoes
-            Utility.waitL (60);
+            Utility.waitL (50);
         }
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
