@@ -46,7 +46,7 @@ public class RangeTest {
         pin23.low ();
         Utility.waitD (2.0);
 
-        for (int i = 0; i < 1_000; ++i) {
+        for (int i = 0; i < ((10 * 1000) / 60); ++i) {
 
             //log.info ("sending 10ms pulse.");
             pin23.high ();
