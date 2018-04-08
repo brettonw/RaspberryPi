@@ -176,7 +176,7 @@ public class StepperMotor {
         double halfway = stepCount / 2.0;
         for (int i = 0; i < stepCount; ++i) {
             step (direction);
-            double proportion = 0.25 + (0.75 * Math.abs ((halfway - i) / halfway));
+            double proportion = Math.abs ((halfway - i) / halfway);
             int delay = (int) Math.round (microsecondsDelayPerStep * proportion);
             Utility.waitShort (delay);
         }
