@@ -178,14 +178,18 @@ public class StepperMotor {
         int microsecondsDelayPerStep = Math.max ((int) Math.round (((rangeTimeScale * 1_000_000.0 * time) - overheadTime) / stepCount), 0);
         int direction = (int) Math.signum (revolutions);
         log.debug (stepCount + " steps (direction: " + direction + ", delay: " + microsecondsDelayPerStep + ")");
+        long timeSum = 0;
         double halfway = stepCount / 2.0;
         for (int i = 0; i < stepCount; ++i) {
+            long startTime = System.nanoTime ();
             step (direction);
             double proportion = (1.0 - speedVaryingRange) + (speedVaryingRange * Math.abs ((halfway - i) / halfway));
             int delay = (int) Math.round (microsecondsDelayPerStep * proportion);
             //log.debug ("delay: " + delay + "us");
+            timeSum += System.nanoTime () - startTime;
             Utility.waitShort (delay);
         }
+        log.debug ("Average overhead: " + (timeSum / stepCount) + "ns");
         return this;
     }
 
