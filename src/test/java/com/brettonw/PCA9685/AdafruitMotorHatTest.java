@@ -68,7 +68,7 @@ public class AdafruitMotorHatTest {
 
     @Test
     public void testStepper () {
-        if (false) {
+        if (true) {
             backAndForth (StepperMotor.getFullStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8));
             backAndForth (StepperMotor.getHalfStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8));
             backAndForth (StepperMotor.getMicroStepper (motorController, MotorId.MOTOR_1, MotorId.MOTOR_2, 1.8, 5));

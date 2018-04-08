@@ -68,7 +68,7 @@ public class RangeTest {
             }
 
             // http://www.micropik.com/PDF/HCSR04.pdf says to use over 60ms cycle to prevent reading echoes
-            Utility.waitL (50);
+            Utility.waitL (60);
         }
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
