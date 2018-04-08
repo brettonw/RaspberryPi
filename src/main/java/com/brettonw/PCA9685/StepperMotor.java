@@ -169,16 +169,19 @@ public class StepperMotor {
         // stepsPerRevolution that is evenly divisible by 4.
         int stepCount = (int) Math.round (Math.abs (revolutions) * (((cycle.length * stepsPerRevolution) / 4) + 1));
 
-        // account for the delay time of going through this loop - assume 1us per iteration for giggles
+        // account for the delay time of going through this loop - assume 3us per iteration for giggles
+        int overheadTime = (stepCount * 3);
 
         // time is in seconds
-        int microsecondsDelayPerStep = Math.max ((int) Math.round (((2 * 1_000_000.0 * time) - (stepCount * 2)) / stepCount), 0);
+        double speedVaryingRange = 0.9;
+        double rangeTimeScale = 1.0 / ((1.0 - speedVaryingRange) + (0.5 * speedVaryingRange));
+        int microsecondsDelayPerStep = Math.max ((int) Math.round (((rangeTimeScale * 1_000_000.0 * time) - overheadTime) / stepCount), 0);
         int direction = (int) Math.signum (revolutions);
         log.debug (stepCount + " steps (direction: " + direction + ", delay: " + microsecondsDelayPerStep + ")");
         double halfway = stepCount / 2.0;
         for (int i = 0; i < stepCount; ++i) {
             step (direction);
-            double proportion = Math.abs ((halfway - i) / halfway);
+            double proportion = (1.0 - speedVaryingRange) + (speedVaryingRange * Math.abs ((halfway - i) / halfway));
             int delay = (int) Math.round (microsecondsDelayPerStep * proportion);
             //log.debug ("delay: " + delay + "us");
             Utility.waitShort (delay);
