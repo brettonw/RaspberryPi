@@ -54,12 +54,12 @@ public class AdafruitMotorHatTest {
         long startTime = System.currentTimeMillis ();
 
         log.info (stepper.getDescription () + " - forward");
-        stepper.turn (0.5);
+        stepper.turn (0.5, 0.25);
         stepper.stop ();
         Utility.waitD (0.5);
 
         log.info (stepper.getDescription () + " - backward");
-        stepper.turn (-0.5);
+        stepper.turn (-0.5, 0.25);
         stepper.stop ();
         Utility.waitD (0.5);
 
