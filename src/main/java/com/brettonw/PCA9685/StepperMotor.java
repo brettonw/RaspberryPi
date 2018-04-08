@@ -178,6 +178,7 @@ public class StepperMotor {
             step (direction);
             double proportion = Math.abs ((halfway - i) / halfway);
             int delay = (int) Math.round (microsecondsDelayPerStep * proportion);
+            log.debug ("delay: " + delay + "us");
             Utility.waitShort (delay);
         }
         return this;
