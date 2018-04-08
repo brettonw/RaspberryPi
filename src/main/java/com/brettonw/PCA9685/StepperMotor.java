@@ -170,7 +170,7 @@ public class StepperMotor {
         int stepCount = (int) Math.round (Math.abs (revolutions) * (((cycle.length * stepsPerRevolution) / 4) + 1));
 
         // time is in seconds
-        int microsecondsDelayPerStep = (int) Math.round ((1_000_000.0 * time) / stepCount);
+        int microsecondsDelayPerStep = (int) Math.round ((2 * 1_000_000.0 * time) / stepCount);
         int direction = (int) Math.signum (revolutions);
         log.debug (stepCount + " steps (direction: " + direction + ", delay: " + microsecondsDelayPerStep + ")");
         double halfway = stepCount / 2.0;
