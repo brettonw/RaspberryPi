@@ -168,18 +168,33 @@ public class StepperMotor {
         // by: stepsPerRevolution / 4. one is led to believe that all steppers have a
         // stepsPerRevolution that is evenly divisible by 4.
         int stepCount = (int) Math.round (Math.abs (revolutions) * (((cycle.length * stepsPerRevolution) / 4) + 1));
+        int direction = (int) Math.signum (revolutions);
+        double halfway = stepCount / 2.0;
 
-        // account for the delay time of going through this loop - assume 3us per iteration for giggles
-        int overheadTime = (stepCount * 3);
+        // account for the delay time of going through this loop - assume 3us per iteration for
+        // giggles - though empirical testing indicates the number is more in the 12-13 milliseconds
+        // range. Maybe raspberry pi isn't the right platform to do this type of control? or maybe
+        // the adafruit hat has too much communication overhead? or maybe Pi4J is based on a milli-
+        // second time model, instead of a micro-second time model.
+        double overheadTime = stepCount * 3;
 
-        // time is in seconds
+        // we want to ramp the speed up and then back down to "soft start" the motor - giving us the
+        // ability to overcome the motor's inherent internal inertia. for instance, where range =
+        // 0.9, the varied speed will be (0.1 + (0.9 * x)) times the delay, where x will vary from 1
+        // to 0 and back to 1 over the set of steps we will make. to keep the total time correct, we
+        // compute the integral of the speed * time as the sum of the area of a box and a triangle.
         double speedVaryingRange = 0.9;
         double rangeTimeScale = 1.0 / ((1.0 - speedVaryingRange) + (0.5 * speedVaryingRange));
-        int microsecondsDelayPerStep = Math.max ((int) Math.round (((rangeTimeScale * 1_000_000.0 * time) - overheadTime) / stepCount), 0);
-        int direction = (int) Math.signum (revolutions);
+
+        // time is in seconds, scale it up to micro-seconds, scale by the rangeTimeScale, then
+        // subtract the expected overhead. finally, divide by the number of steps we will take to
+        // get the delay per step, rounded to the nearest integrl microsecond.
+        double microsecondsDelay = (rangeTimeScale * 1_000_000.0 * time) - overheadTime;
+        int microsecondsDelayPerStep = Math.max ((int) Math.round (microsecondsDelay / stepCount), 0);
         log.debug (stepCount + " steps (direction: " + direction + ", delay: " + microsecondsDelayPerStep + ")");
+
+        // loop over all the steps...
         long timeSum = 0;
-        double halfway = stepCount / 2.0;
         for (int i = 0; i < stepCount; ++i) {
             long startTime = System.nanoTime ();
             step (direction);
