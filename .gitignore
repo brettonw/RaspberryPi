@@ -16,3 +16,4 @@ buildNumber.properties
 build.txt
 .depend
 main
+*.o

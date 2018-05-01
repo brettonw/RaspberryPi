@@ -1,30 +1,43 @@
-appname := main
+applicationName := main
 
-CPP := g++
-CPPFLAGS := -std=c++14
+cpp := gcc-7
+cppFlags := -std=c++14
+cppInclude := 
+ldFlags := 
+ldLibs := -lstdc++
+ldInclude := 
 
-sourceDirs := $(shell find src/main/cpp/com/brettonw -type d -exec sh -c '(ls -p "{}"|grep />/dev/null)||echo "{}"' \;)
-libs := $()
+targetDir := target
+builtApplication = $(targetDir)/$(applicationName)
+dependenciesFile := "$(targetDir)/dependencies"
+sourceDir := src/main/cpp
+testDir := src/test/cpp
 
-# just build all the cpp files in this directory
-srcfiles := $(shell find . -name "*.cpp")
-objects  := $(patsubst %.C, %.o, $(srcfiles))
+sourceFiles := $(shell find $(sourceDir) -name "*.cpp")
+#sourceFiles := $(shell find $(sourceDir) -name "*.cpp" \! -name "main.cpp")
+#compiledFiles := $(patsubst %.cpp,$(targetDir)/$(notdir %).o,$(sourceFiles))
+#compiledFiles := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
+compiledFiles := $(addprefix $(targetDir)/,$(notdir $(patsubst %.cpp,%.o,$(sourceFiles))))
+OUTPUT_OPTION = -o $(targetDir)/$@
 
-all: $(appname)
+all: $(builtApplication)
 
-$(appname): $(objects)
-	$(CPP) $(CPPFLAGS) $(LDFLAGS) -o $(appname) $(objects) $(LDLIBS)
+$(builtApplication): $(compiledFiles)
+	$(cpp) $(cppFlags) $(ldFlags) -o $(builtApplication) $(compiledFiles) $(ldLibs) $(ldInclude)
 
-depend: .depend
+$(targetDir)/%.o: $(sourceDir)/%.cpp
+	$(cpp) $(cppFlags) $(cppInclude) -c -o $@ $<
 
-.depend: $(srcfiles)
-	rm -f ./.depend
-	$(CPP) $(CPPFLAGS) -MM $^>>./.depend;
+dependencies: $(dependenciesFile)
+
+$(dependenciesFile): $(sourceFiles)
+	rm -f $(dependenciesFile)
+	$(cpp) $(cppFlags) -MM $^ >> $(dependenciesFile);
 
 clean:
-	rm -f $(objects)
+	rm -f $(compiledFiles)
 
 dist-clean: clean
-	rm -f *~ .depend
+	rm -rf $(targetDir)
 
-include .depend
+include $(dependenciesFile)
