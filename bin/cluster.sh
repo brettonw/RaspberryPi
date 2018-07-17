@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 declare -a CLUSTER_NAMES=("rpi-c0.local" "rpi-c1.local" "rpi-c2.local" "rpi-c3.local");
 CLUSTER_SIZE=${#CLUSTER_NAMES[@]}
 for (( i=0; i<${CLUSTER_SIZE}; i++ )); do
