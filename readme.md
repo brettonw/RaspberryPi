@@ -103,6 +103,17 @@ what the parts are doing.
  
         > sudo nano /etc/locale.gen
         > sudo locale-gen
+        
+- configure to run headless: 
+
+        > sudo tvservice -o
+        
+- turn off/on wifi and bluetooth
+
+        > rfkill block wifi 
+        > fkill unblock wifi
+        > rfkill block bluetooth
+        > rfkill unblock bluetooth
 
 ### Steps to use the WebGL capability
 - update the chromium launch command to remove the "disable GPU compositing" flag
