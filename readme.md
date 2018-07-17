@@ -110,10 +110,10 @@ what the parts are doing.
         
 - turn off/on wifi and bluetooth
 
-        > rfkill block wifi 
-        > fkill unblock wifi
-        > rfkill block bluetooth
-        > rfkill unblock bluetooth
+        > sudo rfkill block wifi 
+        > sudo rfkill unblock wifi
+        > sudo rfkill block bluetooth
+        > sudo rfkill unblock bluetooth
 
 ### Steps to use the WebGL capability
 - update the chromium launch command to remove the "disable GPU compositing" flag
