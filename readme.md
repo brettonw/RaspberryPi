@@ -114,6 +114,8 @@ what the parts are doing.
         > sudo rfkill unblock wifi
         > sudo rfkill block bluetooth
         > sudo rfkill unblock bluetooth
+        
+- command line to get hardware info: lshw
 
 ### Steps to use the WebGL capability
 - update the chromium launch command to remove the "disable GPU compositing" flag
