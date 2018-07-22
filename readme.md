@@ -99,6 +99,23 @@ what the parts are doing.
 - The Wifi only connects to the lower pulseFrequency transmitters.
 - I use sshpass to do ssh logins from the command line in the setup script. This is not a popular tool - brew doesn't install it on the mac. I don't exactly appreciate having other people make my decisions for me, so I built it and installed it myself - the source was pulled from sourceforge.
 - to do a "factory reset", you use NOOBS (New Out Of Box Software) - but you have to wait until the raspberry shows on the screen to press the shift key to launch NOOBS.
+- Running perl, we find out that the default Respberry Pi doesn't have US locale:
+ 
+        > sudo nano /etc/locale.gen
+        > sudo locale-gen
+        
+- configure to run headless: 
+
+        > sudo tvservice -o
+        
+- turn off/on wifi and bluetooth
+
+        > sudo rfkill block wifi 
+        > sudo rfkill unblock wifi
+        > sudo rfkill block bluetooth
+        > sudo rfkill unblock bluetooth
+        
+- command line to get hardware info: lshw
 
 ### Steps to use the WebGL capability
 - update the chromium launch command to remove the "disable GPU compositing" flag
@@ -107,3 +124,4 @@ what the parts are doing.
   
 #### CONCLUSION
 it... "works", but is not currently viable for GPU-intensive tasks.
+

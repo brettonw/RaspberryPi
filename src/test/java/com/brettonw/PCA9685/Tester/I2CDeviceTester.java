@@ -128,11 +128,9 @@ public class I2CDeviceTester implements I2CDevice {
     public void report () throws Exception {
         if (errorState == null) {
             int count = expectations.size ();
-            if (expectations.size () > 0) {
+            if (count> 0) {
                 Expectation currentExpectation = expectations.remove (0);
                 log.debug ("UNMET! .expect (" + String.format ("0x%04x", currentExpectation.address) + ", (byte)" + String.format ("0x%02x", currentExpectation.b) + ")");
-            }
-            if (count > 0) {
                 throw new Exception ("Unmet expectation" + ((count > 1) ? "s" : "") + " (" + count + ")");
             }
         } else {
