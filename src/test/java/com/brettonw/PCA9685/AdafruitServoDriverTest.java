@@ -16,7 +16,7 @@ public class AdafruitServoDriverTest {
 
     @Test
     public void testServo () {
-        if (false) {
+        if (true) {
             Servo servo1 = new Servo (servoController, ServoId.SERVO_01, 1, 2);
             Servo servo9 = new Servo (servoController, ServoId.SERVO_09, 1, 2);
             Utility.waitD (3.0);
