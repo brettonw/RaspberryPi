@@ -108,10 +108,14 @@ what the parts are doing.
 
         > sudo tvservice -o
         
-- turn off/on wifi and bluetooth
+- turn off/on wifi and bluetooth, see https://github.com/raspberrypi/firmware/blob/master/boot/overlays/README
     in /boot/config.txt:
         dtoverlay=pi3-disable-bt
         dtoverlay=pi3-disable-wifi
+        
+- after disabling bluetooth, turn off the uart consumer with:
+    sudo systemctl disable hcuart
+    
         
 - command line to get hardware info: lshw
 
