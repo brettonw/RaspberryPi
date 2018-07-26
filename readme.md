@@ -109,11 +109,9 @@ what the parts are doing.
         > sudo tvservice -o
         
 - turn off/on wifi and bluetooth
-
-        > sudo rfkill block wifi 
-        > sudo rfkill unblock wifi
-        > sudo rfkill block bluetooth
-        > sudo rfkill unblock bluetooth
+    in /boot/config.txt:
+        dtoverlay=pi3-disable-bt
+        dtoverlay=pi3-disable-wifi
         
 - command line to get hardware info: lshw
 

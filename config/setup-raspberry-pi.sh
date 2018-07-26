@@ -98,11 +98,11 @@ if [[ -z $USER_PASSWORD ]]; then
     # if the user doesn't want to give one, we can just make one up - they will use ssh with
     # certs when we are done anyway, and they have access to the default user password with
     # sudo rights if they need to reset it
-    OLD_LC_CTYPE=$LC_CTYPE
-    export LC_CTYPE=C
-    USER_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
-    export LC_CTYPE=$OLD_LC_CTYPE
-    echo "Created password for $USER ($USER_PASSWORD)."
+    OLD_LC_ALL="$LC_ALL";
+    export LC_ALL=C;
+    USER_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1);
+    export LC_ALL="$OLD_LC_ALL";
+    echo "Created password for $USER ($USER_PASSWORD).";
 fi
 
 # try to login with the supplied credentials

@@ -1,6 +1,6 @@
 # make sure Java is in the path
 export JAVA_HOME="$HOME/bin/jdk8"
-export PATH=$JAVA_HOME/bin:$PATH
+export PATH=".:$HOME/bin:$JAVA_HOME/bin:$PATH"
 
 # to build and run projects using Maven - the GPIO libraries require root access, so we have
 # to run the build with sudo. I want my own maven executable and settings, so that we don't
