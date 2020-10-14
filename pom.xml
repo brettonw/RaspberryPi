@@ -21,7 +21,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <log4j.version>RELEASE</log4j.version>
+        <log4j.version>2.13.3</log4j.version>
         <junit.version>4.13.1</junit.version>
         <java.version>8</java.version>
     </properties>
