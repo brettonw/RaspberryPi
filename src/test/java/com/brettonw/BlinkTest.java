@@ -12,7 +12,7 @@ public class BlinkTest {
         final GpioController gpio = GpioFactory.getInstance ();
 
         // provision gpio pin #01 as an output pin and turn on
-        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin (RaspiPin.GPIO_01, "MyLED", PinState.HIGH);
+        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin (RaspiPin.GPIO_12, "Relay1", PinState.HIGH);
 
         // set shutdown state for this pin
         pin.setShutdownOptions (true, PinState.LOW);
@@ -41,7 +41,7 @@ public class BlinkTest {
 
         // turn on gpio pin #01 for 1 second and then off
         System.out.println ("--> GPIO state should be: ON ");
-        pin.pulse (1000, true); // set second argument to 'true' use a blocking call
+        //pin.pulse (1000, true); // set second argument to 'true' use a blocking call
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
