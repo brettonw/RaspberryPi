@@ -1,7 +1,7 @@
 package com.brettonw;
 
 import com.pi4j.io.gpio.*;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class BlinkTest {
     @Test

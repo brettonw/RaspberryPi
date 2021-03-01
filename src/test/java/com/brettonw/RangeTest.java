@@ -3,7 +3,7 @@ package com.brettonw;
 import com.pi4j.io.gpio.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class RangeTest {
     protected static final Logger log = LogManager.getLogger (RangeTest.class);

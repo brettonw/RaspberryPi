@@ -92,6 +92,7 @@ From your host computer, copy your .ssh directory and .bashrc to the new machine
     sudo apt install default-jdk
     sudo apt install tomcat9
     sudo apt install apache2 -y
+    sudo apt install python3-pip
 ```
 
 ## Older Stuff

@@ -3,7 +3,7 @@ package com.brettonw.PCA9685;
 import com.brettonw.Utility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class AdafruitMotorHatTest {
     private static final Logger log = LogManager.getLogger (AdafruitMotorHatTest.class);

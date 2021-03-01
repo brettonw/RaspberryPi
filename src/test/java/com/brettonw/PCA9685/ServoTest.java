@@ -2,9 +2,9 @@ package com.brettonw.PCA9685;
 
 import com.brettonw.PCA9685.Tester.I2CDeviceTester;
 import com.brettonw.PCA9685.Tester.ServoControllerTester;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServoTest {
     @Test
