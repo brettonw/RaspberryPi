@@ -4,6 +4,9 @@ Note: February 2021 - Restarting this project
 
 ## Instructions
 
+### Starting considerations
+- Raspberry Pi Zero (W) no longer supports Java versions greater than 10. It's probably not worth my while to try to support any codebase requiring Java on that platform.
+
 ### Setup a Raspberry Pi (headless)
 From scratch, to set up and run an OS on a Raspberry Pi, follow these steps:
 - Use the [Raspberry Pi Imager](https://www.raspberrypi.org/software/) to put Pi OS Lite on an SD Card.
@@ -69,8 +72,7 @@ After all of that, I like to reboot the system and log in again.
 ### Update and set up a new user:
 To update the software on the computer and add a new user, I run the following steps:
 ```
-    sudo apt update
-    sudo apt full-upgrade
+    sudo apt update -y && sudo apt full-upgrade -y
     # this might take a little while
     
     sudo adduser <username>
@@ -88,12 +90,15 @@ From your host computer, copy your .ssh directory and .bashrc to the new machine
 
 ### Install software
 ```
-    sudo apt install git
-    sudo apt install default-jdk
-    sudo apt install tomcat9
-    sudo apt install apache2 -y
-    sudo apt install python3-pip
-    sudo apt install python3-gpiozero
+    sudo apt install git default-jdk tomcat9 apache2 python3-pip python3-gpiozero -y
+    sudo pip3 install adafruit-python-shell
+    wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py; sudo python3 raspi-blinka.py
+
+    sudo pip3 install adafruit-circuitpython-mcp9808
+    sudo pip3 install adafruit-circuitpython-sht31d
+    sudo pip3 install adafruit-circuitpython-hts221
+    sudo pip3 install adafruit-circuitpython-si7021
+    sudo pip3 install adafruit-circuitpython-bmp3xx
 ```
 
 ## Older Stuff
